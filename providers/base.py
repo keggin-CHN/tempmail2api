@@ -93,3 +93,53 @@ class TempMailClient(ABC):
             是否删除成功
         """
         raise NotImplementedError(f"{self.provider_name} 不支持删除邮件")
+
+    def wait_for_email(
+        self,
+        address: str,
+        timeout: int = 120,
+        poll_interval: int = 5,
+        since: Optional[str] = None,
+    ) -> Optional[InboxEmail]:
+        """
+        等待新邮件到达
+
+        Args:
+            address: 邮箱地址
+            timeout: 超时秒数
+            poll_interval: 轮询间隔秒数
+            since: 只接受此时间之后的邮件
+
+        Returns:
+            第一封新邮件，超时返回 None
+        """
+        import time
+
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            emails = self.list_emails(address)
+            if since:
+                emails = [e for e in emails if (e.received_at or "") > since]
+            if emails:
+                return emails[0]
+            remaining = deadline - time.time()
+            if remaining > 0:
+                time.sleep(min(poll_interval, remaining))
+        return None
+
+    def generate_and_wait(
+        self,
+        duration_minutes: int = 10,
+        domain: Optional[str] = None,
+        timeout: int = 120,
+        poll_interval: int = 5,
+    ) -> tuple["TempEmail", Optional[InboxEmail]]:
+        """
+        生成邮箱并等待第一封邮件
+
+        Returns:
+            (TempEmail, InboxEmail 或 None)
+        """
+        email = self.generate_email(duration_minutes=duration_minutes, domain=domain)
+        received = self.wait_for_email(email.address, timeout=timeout, poll_interval=poll_interval)
+        return email, received
