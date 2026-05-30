@@ -6,6 +6,7 @@ API: https://v1.boomlify.com
 """
 
 import json
+import logging
 import random
 import string
 from typing import Any, Dict, List, Optional
@@ -13,11 +14,12 @@ from typing import Any, Dict, List, Optional
 import requests
 
 from .base import InboxEmail, TempEmail, TempMailClient
+from .utils import EmailFetchError, EmailGenerateError, retry
+
+logger = logging.getLogger("chatgptmail-2api")
 
 API_BASE = "https://v1.boomlify.com"
-# 从前端 JS 逆向提取的默认加密密钥
 ENCRYPTION_KEY = "7a9b3c8d2e1f4g5h6i9j0k8l2m4n6o8p"
-# Transport Key Ring: 响应头 X-Enc-Key-Id 指定使用哪个密钥
 TRANSPORT_KEY_RING = {
     "hgjfh": "rk4kA9fQm8v7W4d2TzX1Y",
     "hgjfhg": "t2PzKd9sQw1Lm3XyVbN6R",
@@ -55,7 +57,6 @@ TRANSPORT_KEY_RING = {
 
 
 def _xor_decrypt(encrypted_hex: str, key: str) -> str:
-    """XOR 解密 boomlify 加密响应"""
     key_bytes = key.encode("utf-8")
     encrypted_bytes = bytes.fromhex(encrypted_hex)
     decrypted = bytes(b ^ key_bytes[i % len(key_bytes)] for i, b in enumerate(encrypted_bytes))
@@ -63,7 +64,6 @@ def _xor_decrypt(encrypted_hex: str, key: str) -> str:
 
 
 def _decrypt_response(data: Any, key_id: Optional[str] = None, key: str = ENCRYPTION_KEY) -> Any:
-    """解密 boomlify 响应（如果有 encrypted 字段）"""
     if isinstance(data, dict) and "encrypted" in data:
         actual_key = key
         if key_id and key_id in TRANSPORT_KEY_RING:
@@ -92,25 +92,23 @@ class BoomlifyClient(TempMailClient):
         return "boomlify"
 
     def _api_request(self, method: str, path: str, **kwargs: Any) -> Any:
-        """发送请求并自动解密响应"""
-        response = self.session.request(method, f"{API_BASE}{path}", **kwargs)
+        response = self.session.request(method, f"{API_BASE}{path}", timeout=15, **kwargs)
         response.raise_for_status()
         data = response.json()
         enc_key_id = response.headers.get("x-enc-key-id")
         return _decrypt_response(data, key_id=enc_key_id)
 
     def _get_domains(self) -> List[Dict[str, Any]]:
-        """获取公开域名列表（带缓存）"""
         if self._cached_domains is None:
             self._cached_domains = self._api_request("GET", "/domains/public")
         return self._cached_domains
 
+    @retry(max_attempts=3, backoff_factor=1.5, exceptions=(requests.RequestException,))
     def generate_email(self, duration_minutes: int = 10, domain: Optional[str] = None) -> TempEmail:
         domains = self._get_domains()
         if not domains:
-            raise RuntimeError("无可用域名")
+            raise EmailGenerateError("boomlify 无可用域名")
 
-        # 选择域名
         if domain:
             target = next((d for d in domains if d["domain"] == domain), None)
             if not target:
@@ -118,17 +116,19 @@ class BoomlifyClient(TempMailClient):
         else:
             target = domains[0]
 
-        # 生成随机用户名
         username = "".join(random.choices(string.ascii_lowercase + string.digits, k=10))
         email_addr = f"{username}@{target['domain']}"
 
-        # 使用公开端点创建（无需认证/验证码）
-        data = self._api_request(
-            "POST",
-            "/emails/public/create",
-            json={"email": email_addr, "domainId": target["id"]},
-        )
+        try:
+            data = self._api_request(
+                "POST",
+                "/emails/public/create",
+                json={"email": email_addr, "domainId": target["id"]},
+            )
+        except requests.RequestException as e:
+            raise EmailGenerateError(f"boomlify 创建邮箱失败: {e}") from e
 
+        logger.info("boomlify 生成邮箱: %s", email_addr)
         return TempEmail(
             address=data.get("email", email_addr),
             provider=self.provider_name,
@@ -137,14 +137,14 @@ class BoomlifyClient(TempMailClient):
             raw=data,
         )
 
+    @retry(max_attempts=3, backoff_factor=1.0, exceptions=(requests.RequestException,))
     def list_emails(self, address: str) -> List[InboxEmail]:
-        # 先通过地址查找 email ID
-        domains = self._get_domains()
-        data = self._api_request("GET", f"/emails/public/{requests.utils.quote(address, safe='@')}")
+        try:
+            data = self._api_request("GET", f"/emails/public/{requests.utils.quote(address, safe='@')}")
+        except requests.RequestException as e:
+            raise EmailFetchError(f"boomlify 获取收件箱失败: {e}") from e
 
-        # 响应直接是邮件数组
         emails = data if isinstance(data, list) else []
-
         return [
             InboxEmail(
                 id=str(e.get("id", "")),
@@ -162,16 +162,16 @@ class BoomlifyClient(TempMailClient):
             for e in emails
         ]
 
+    @retry(max_attempts=2, backoff_factor=1.0, exceptions=(requests.RequestException,))
     def get_email_detail(self, email_id: str) -> InboxEmail:
-        data = self._api_request("GET", f"/emails/public/{email_id}")
+        try:
+            data = self._api_request("GET", f"/emails/public/{email_id}")
+        except requests.RequestException as e:
+            raise EmailFetchError(f"boomlify 获取邮件详情失败: {e}") from e
 
-        # 可能返回单个对象或数组
-        if isinstance(data, list):
-            if not data:
-                raise RuntimeError(f"邮件 {email_id} 不存在")
-            email_data = data[0]
-        else:
-            email_data = data
+        email_data = data[0] if isinstance(data, list) and data else data
+        if isinstance(email_data, list) and not email_data:
+            raise EmailFetchError(f"邮件 {email_id} 不存在")
 
         return InboxEmail(
             id=str(email_data.get("id", email_id)),
@@ -188,5 +188,4 @@ class BoomlifyClient(TempMailClient):
         )
 
     def get_public_domains(self) -> List[Dict[str, Any]]:
-        """获取可用的公共域名列表"""
         return self._get_domains()

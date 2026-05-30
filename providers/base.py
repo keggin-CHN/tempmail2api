@@ -3,9 +3,13 @@
 定义统一接口，所有 provider 必须实现
 """
 
+import logging
+import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
+
+logger = logging.getLogger("chatgptmail-2api")
 
 
 @dataclass
@@ -39,60 +43,26 @@ class TempMailClient(ABC):
     @property
     @abstractmethod
     def provider_name(self) -> str:
-        """返回 provider 名称"""
         ...
 
     @abstractmethod
     def generate_email(self, duration_minutes: int = 10, domain: Optional[str] = None) -> TempEmail:
-        """
-        生成一个临时邮箱地址
-
-        Args:
-            duration_minutes: 邮箱有效期（分钟）
-            domain: 指定域名（部分 provider 支持）
-
-        Returns:
-            TempEmail 对象
-        """
         ...
 
     @abstractmethod
     def list_emails(self, address: str) -> List[InboxEmail]:
-        """
-        获取收件箱邮件列表
-
-        Args:
-            address: 邮箱地址
-
-        Returns:
-            InboxEmail 列表
-        """
         ...
 
     @abstractmethod
     def get_email_detail(self, email_id: str) -> InboxEmail:
-        """
-        获取单封邮件详情
-
-        Args:
-            email_id: 邮件 ID
-
-        Returns:
-            InboxEmail 对象
-        """
         ...
 
     def delete_email(self, email_id: str) -> bool:
-        """
-        删除邮件（可选实现）
-
-        Args:
-            email_id: 邮件 ID
-
-        Returns:
-            是否删除成功
-        """
         raise NotImplementedError(f"{self.provider_name} 不支持删除邮件")
+
+    # ------------------------------------------------------------------
+    #  等待 & 轮询
+    # ------------------------------------------------------------------
 
     def wait_for_email(
         self,
@@ -100,32 +70,93 @@ class TempMailClient(ABC):
         timeout: int = 120,
         poll_interval: int = 5,
         since: Optional[str] = None,
+        on_poll: Optional[Callable[[int, int], None]] = None,
     ) -> Optional[InboxEmail]:
         """
-        等待新邮件到达
+        轮询等待新邮件到达
 
         Args:
-            address: 邮箱地址
-            timeout: 超时秒数
-            poll_interval: 轮询间隔秒数
-            since: 只接受此时间之后的邮件
+            address:       邮箱地址
+            timeout:       超时秒数（默认 120）
+            poll_interval: 轮询间隔秒数（默认 5）
+            since:         只接受此时间之后的邮件
+            on_poll:       每次轮询的回调 (attempt, remaining_seconds)
 
         Returns:
             第一封新邮件，超时返回 None
         """
-        import time
+        deadline = time.time() + timeout
+        attempt = 0
+        # 自适应间隔：前 30s 用较短间隔（2s），之后用 poll_interval
+        adaptive_fast = 2
+        adaptive_fast_until = time.time() + 30
 
+        logger.info(
+            "[%s] 等待邮件 %s (超时 %ds, 间隔 %ds)",
+            self.provider_name, address, timeout, poll_interval,
+        )
+
+        while time.time() < deadline:
+            attempt += 1
+            remaining = deadline - time.time()
+
+            try:
+                emails = self.list_emails(address)
+            except Exception as e:
+                logger.warning("[%s] 第 %d 次轮询出错: %s", self.provider_name, attempt, e)
+                # 网络错误时不立即放弃，等下一个周期
+                sleep_time = min(poll_interval, remaining)
+                if sleep_time > 0:
+                    time.sleep(sleep_time)
+                continue
+
+            if since:
+                emails = [e for e in emails if (e.received_at or "") > since]
+
+            if emails:
+                logger.info(
+                    "[%s] 第 %d 次轮询收到 %d 封邮件",
+                    self.provider_name, attempt, len(emails),
+                )
+                return emails[0]
+
+            if on_poll:
+                on_poll(attempt, int(remaining))
+
+            # 自适应间隔
+            interval = adaptive_fast if time.time() < adaptive_fast_until else poll_interval
+            sleep_time = min(interval, remaining)
+            if sleep_time > 0:
+                time.sleep(sleep_time)
+
+        logger.warning("[%s] 等待超时 %ds，未收到邮件", self.provider_name, timeout)
+        return None
+
+    def wait_for_emails(
+        self,
+        address: str,
+        count: int = 1,
+        timeout: int = 120,
+        poll_interval: int = 5,
+        since: Optional[str] = None,
+    ) -> List[InboxEmail]:
+        """
+        等待至少 count 封邮件到达
+
+        Returns:
+            收到的邮件列表（可能多于 count）
+        """
         deadline = time.time() + timeout
         while time.time() < deadline:
             emails = self.list_emails(address)
             if since:
                 emails = [e for e in emails if (e.received_at or "") > since]
-            if emails:
-                return emails[0]
+            if len(emails) >= count:
+                return emails
             remaining = deadline - time.time()
             if remaining > 0:
                 time.sleep(min(poll_interval, remaining))
-        return None
+        return []
 
     def generate_and_wait(
         self,
