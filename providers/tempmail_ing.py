@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Optional
 import requests
 
 from .base import InboxEmail, TempEmail, TempMailClient
+from .utils import retry
 
 API_BASE = "https://api.tempmail.ing"
 
