@@ -1,52 +1,90 @@
 # chatgptmail-2api
 
-> ⚡ 逆向解析 `mail.chatgpt.org.uk` 内部接口，提供自动化收发验证的端到端纯净实现。
+> ⚡ 逆向解析多个临时邮箱平台的 Web API 协议，提供统一 Python 客户端实现。
 
-## 简介
+## 支持平台
 
-本项目包含一个极简的 Python 验证脚本（`demo.py`），通过抹平 TLS 指纹差异，绕过 `mail.chatgpt.org.uk` 的前置风控。
-无需真实的浏览器环境，即可实现**极速生成临时邮箱**、**自动化轮询收件**、**邮件详情拉取**的完整生命周期管理。
+| 平台 | API Base | 认证方式 | 加密 | 状态 |
+|------|----------|----------|------|------|
+| [mail.chatgpt.org.uk](https://mail.chatgpt.org.uk) | 同左 | 首页 Token | ❌ | ✅ |
+| [tempmail.ing](https://tempmail.ing) | `api.tempmail.ing` | 无 | ❌ | ✅ |
+| [boomlify.com](https://boomlify.com) | `v1.boomlify.com` | Guest JWT | ✅ XOR | ✅ |
 
 ## 核心机制
 
-*   **TLS 指纹伪装**: 结合 `curl_cffi` 模拟 Chrome 136 指纹，稳定通过前端校验。
-*   **Token 劫持**: 正则嗅探首页 `window.__BROWSER_AUTH` 状态，动态无缝签发后续 API 所需的 `X-Inbox-Token`。
-*   **E2E 闭环验证**: 内置 Resend HTTP API 对接。从发信、轮询到收件解析，一键跑通真实链路。
-*   **轻量化交付**: 拒绝过度设计与臃肿封装，核心协议逻辑单文件梭哈，方便降维移植。
+*   **统一接口**: 所有 provider 实现 `TempMailClient` 抽象基类，提供一致的 `generate_email()` / `list_emails()` / `get_email_detail()` API。
+*   **TLS 指纹伪装**: ChatGPTMail 通过 `curl_cffi` 模拟 Chrome 指纹绕过风控。
+*   **Token 劫持**: ChatGPTMail 从首页 `window.__BROWSER_AUTH` 提取鉴权 Token。
+*   **XOR 解密**: Boomlify 响应使用 XOR 加密，密钥从前端 JS 提取。
+*   **ETag 缓存**: TempMail.ing 支持 ETag 条件请求，减少重复数据传输。
 
 ## 快速开始
 
-### 1. 环境准备
-
-环境要求：Python 3.8+。
+### 1. 安装依赖
 
 ```bash
 pip install curl_cffi requests
 ```
 
-### 2. 参数配置
-
-编辑 `demo.py`，配置用于端到端测试的发信凭证：
+### 2. 使用统一客户端
 
 ```python
-RESEND_API_KEY = "re_..."            # 你的 Resend API Key
-SENDER_EMAIL = "test@yourdomain.com" # 你的发件地址
+from providers import TempMailIngClient, BoomlifyClient, ChatGPTMailClient
+
+# 任选一个 provider
+client = TempMailIngClient()
+
+# 生成临时邮箱
+email = client.generate_email(duration_minutes=10)
+print(f"邮箱地址: {email.address}")
+
+# 查看收件箱
+emails = client.list_emails(email.address)
+print(f"当前邮件数: {len(emails)}")
+
+# 获取邮件详情
+if emails:
+    detail = client.get_email_detail(emails[0].id)
+    print(f"主题: {detail.subject}")
 ```
 
-### 3. 运行链路
+### 3. 运行端到端测试
 
 ```bash
-python demo.py
+# 测试所有平台
+python examples/demo_all.py
+
+# 测试单个平台
+python examples/demo_all.py tempmail
+python examples/demo_all.py boomlify
+python examples/demo_all.py chatgptmail
 ```
 
-执行后，脚本将自动串联走完以下流程：
-取首页 Token -> 签发临时邮箱 -> 触发 Resend 投递特征测试邮件 -> 轮询查收 -> 提取邮件 ID 及完整 RAW 数据。
+## 项目结构
 
-## 协议白皮书
+```
+├── providers/
+│   ├── __init__.py          # 统一导出
+│   ├── base.py              # 抽象基类 + 数据模型
+│   ├── chatgptmail.py       # mail.chatgpt.org.uk 客户端
+│   ├── tempmail_ing.py      # tempmail.ing 客户端
+│   └── boomlify.py          # boomlify.com 客户端
+├── examples/
+│   └── demo_all.py          # 多平台端到端测试
+├── demo.py                  # 原始 ChatGPTMail 测试脚本
+├── API NOTES.md             # ChatGPTMail 协议文档
+├── API_NOTES_TEMPMAIL_ING.md
+└── API_NOTES_BOOMLIFY.md
+```
 
-逆向还原的协议细节及其复刻约束，已归档于 [`API NOTES.md`](./API%20NOTES.md)。
-如遇接口变更，或需要将其重构至 Go/Node.js 等其他技术栈，请以此备忘录为准。
+## 协议文档
+
+每个平台的逆向协议细节:
+
+- [`API NOTES.md`](./API%20NOTES.md) — ChatGPTMail 协议
+- [`API_NOTES_TEMPMAIL_ING.md`](./API_NOTES_TEMPMAIL_ING.md) — TempMail.ing 协议
+- [`API_NOTES_BOOMLIFY.md`](./API_NOTES_BOOMLIFY.md) — Boomlify 协议
 
 ## 免责声明
 
-本代码仅供协议研究与端到端测试学习使用。请遵循目标站点的使用规范，勿用于恶意消耗公共资源或发送垃圾邮件。
+本代码仅供协议研究与端到端测试学习使用。请遵循各目标站点的使用规范，勿用于恶意消耗公共资源或发送垃圾邮件。
