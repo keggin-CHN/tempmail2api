@@ -82,6 +82,7 @@ from providers.tempail import TempailClient
 from providers.byom import ByomClient
 from providers.tempmail_net import TempmailNetClient
 from providers.throwawaymail import ThrowawayMailClient
+from providers.minuteinbox import MinuteinboxClient
 
 
 PROVIDERS = {
@@ -167,6 +168,7 @@ PROVIDERS = {
     "tempmail.net": TempmailNetClient,
     "tempmailnet": TempmailNetClient,
     "throwawaymail": ThrowawayMailClient,
+    "minuteinbox": MinuteinboxClient,
 }
 
 
