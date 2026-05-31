@@ -772,3 +772,61 @@ class TestMoaktClient(unittest.TestCase):
         client._session.get.return_value = mock_resp
         emails = client.list_emails("test@mocake.com")
         self.assertIsInstance(emails, list)
+
+
+class TestFakemailNetClient(unittest.TestCase):
+    """Fakemail.net provider test"""
+
+    def test_provider_name(self):
+        from providers.fakemail_net import FakemailNetClient
+        client = FakemailNetClient()
+        self.assertEqual(client.provider_name, "fakemail.net")
+
+    def test_generate_email(self):
+        from providers.fakemail_net import FakemailNetClient
+        client = FakemailNetClient()
+        mock_resp1 = MagicMock()
+        mock_resp1.status_code = 200
+        mock_resp1.text = 'const CSRF="abc123"'
+        mock_resp2 = MagicMock()
+        mock_resp2.status_code = 200
+        mock_resp2.content = b'{"email":"test@fakemail.net"}'
+        client._session = MagicMock()
+        client._session.get.side_effect = [mock_resp1, mock_resp2]
+        email = client.generate_email()
+        self.assertEqual(email.address, "test@fakemail.net")
+        self.assertEqual(email.provider, "fakemail.net")
+
+    def test_list_emails_empty(self):
+        from providers.fakemail_net import FakemailNetClient
+        client = FakemailNetClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = '<html><body><table></table></body></html>'
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@fakemail.net")
+        self.assertIsInstance(emails, list)
+
+
+class TestEmailfakeClient(unittest.TestCase):
+    """Emailfake.com provider test"""
+
+    @patch("providers.emailfake.EmailfakeClient._get_domains", return_value=["tmpeml.com"])
+    def test_generate_email(self, *args):
+        from providers.emailfake import EmailfakeClient
+        client = EmailfakeClient()
+        email = client.generate_email()
+        self.assertIn("@tmpeml.com", email.address)
+        self.assertEqual(email.provider, "emailfake")
+
+    def test_list_emails_empty(self):
+        from providers.emailfake import EmailfakeClient
+        client = EmailfakeClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = '<html><body><div id="email-table"></div></body></html>'
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@tmpeml.com")
+        self.assertIsInstance(emails, list)

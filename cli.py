@@ -35,6 +35,8 @@ from providers.inboxes import InboxesClient
 from providers.noopmail import NoopmailClient
 from providers.mailnesia import MailnesiaClient
 from providers.moakt import MoaktClient
+from providers.fakemail_net import FakemailNetClient
+from providers.emailfake import EmailfakeClient
 
 
 PROVIDERS = {
@@ -64,6 +66,9 @@ PROVIDERS = {
     "noopmail": NoopmailClient,
     "mailnesia": MailnesiaClient,
     "moakt": MoaktClient,
+    "fakemailnet": FakemailNetClient,
+    "fakemail.net": FakemailNetClient,
+    "emailfake": EmailfakeClient,
 }
 
 

@@ -1,16 +1,18 @@
 """python -m providers — list all providers"""
 from providers import (
-    BoomlifyClient, ChatGPTMailClient, EmailnatorClient, GuerrillaMailClient,
-    HarakirimailClient, InboxesClient, MailGwClient, MailTmClient, MohmalClient,
-    MoaktClient, MailnesiaClient, NoopmailClient, TempMailIngClient,
-    TempMailLolClient, TempMailOrgClient, TempMailPlusClient, YopmailClient,
+    BoomlifyClient, ChatGPTMailClient, EmailnatorClient, EmailfakeClient,
+    FakemailNetClient, GuerrillaMailClient, HarakirimailClient, InboxesClient,
+    MailGwClient, MailTmClient, MohmalClient, MoaktClient, MailnesiaClient,
+    NoopmailClient, TempMailIngClient, TempMailLolClient, TempMailOrgClient,
+    TempMailPlusClient, YopmailClient,
 )
 
 CLIENTS = [
     TempMailIngClient, BoomlifyClient, ChatGPTMailClient, GuerrillaMailClient,
     MailTmClient, EmailnatorClient, MohmalClient, TempMailOrgClient,
     TempMailLolClient, YopmailClient, MailGwClient, HarakirimailClient,
-    TempMailPlusClient, InboxesClient, NoopmailClient, MailnesiaClient, MoaktClient,
+    TempMailPlusClient, InboxesClient, NoopmailClient, MailnesiaClient,
+    MoaktClient, FakemailNetClient, EmailfakeClient,
 ]
 
 def main():
