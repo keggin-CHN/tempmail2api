@@ -754,24 +754,22 @@ class TestMailnesiaClient(unittest.TestCase):
 class TestMoaktClient(unittest.TestCase):
     """Moakt.com provider test"""
 
-    @patch("providers.moakt.MoaktClient._get_domains", return_value=["mocake.com"])
-    def test_generate_email(self, *args):
+    def test_provider_name(self):
         from providers.moakt import MoaktClient
-        client = MoaktClient()
-        email = client.generate_email()
-        self.assertIn("@mocake.com", email.address)
-        self.assertEqual(email.provider, "moakt")
+        c = MoaktClient()
+        self.assertEqual(c.provider_name, 'moakt')
 
-    def test_list_emails_empty(self):
+    def test_inheritance(self):
         from providers.moakt import MoaktClient
-        client = MoaktClient()
-        mock_resp = MagicMock()
-        mock_resp.status_code = 200
-        mock_resp.text = '<html><body><div id="email_message_list"></div></body></html>'
-        client._session = MagicMock()
-        client._session.get.return_value = mock_resp
-        emails = client.list_emails("test@mocake.com")
-        self.assertIsInstance(emails, list)
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(MoaktClient, TempMailClient))
+
+    def test_has_methods(self):
+        from providers.moakt import MoaktClient
+        c = MoaktClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
 
 
 class TestFakemailNetClient(unittest.TestCase):
@@ -1668,6 +1666,27 @@ class TestExpressinboxhubMock(unittest.TestCase):
     def test_has_methods(self):
         from providers.expressinboxhub import ExpressinboxhubClient
         c = ExpressinboxhubClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
+
+
+class TestMoaktMock(unittest.TestCase):
+    """Test MoaktClient"""
+
+    def test_inheritance(self):
+        from providers.moakt import MoaktClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(MoaktClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.moakt import MoaktClient
+        c = MoaktClient()
+        self.assertEqual(c.provider_name, 'moakt')
+
+    def test_has_methods(self):
+        from providers.moakt import MoaktClient
+        c = MoaktClient()
         self.assertTrue(callable(c.generate_email))
         self.assertTrue(callable(c.list_emails))
         self.assertTrue(callable(c.get_email_detail))

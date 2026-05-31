@@ -77,6 +77,7 @@ from providers.guerrillamail_aliases import GrrLaClient, GuerrillamailInfoClient
 from providers.tempdashmail_org import TempdashmailOrgClient
 from providers.tenminemail import TenminemailClient
 from providers.expressinboxhub import ExpressinboxhubClient
+from providers.moakt import MoaktClient
 
 
 PROVIDERS = {
@@ -156,6 +157,7 @@ PROVIDERS = {
     "tempdashmail.org": TempdashmailOrgClient,
     "10minemail": TenminemailClient,
     "expressinboxhub": ExpressinboxhubClient,
+    "moakt": MoaktClient,
 }
 
 

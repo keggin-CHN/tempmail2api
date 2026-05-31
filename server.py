@@ -84,6 +84,7 @@ from providers.guerrillamail_aliases import GrrLaClient, GuerrillamailInfoClient
 from providers.tempdashmail_org import TempdashmailOrgClient
 from providers.tenminemail import TenminemailClient
 from providers.expressinboxhub import ExpressinboxhubClient
+from providers.moakt import MoaktClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -164,6 +165,7 @@ PROVIDERS = {
     "tempdashmail.org": TempdashmailOrgClient,
     "10minemail": TenminemailClient,
     "expressinboxhub": ExpressinboxhubClient,
+    "moakt": MoaktClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

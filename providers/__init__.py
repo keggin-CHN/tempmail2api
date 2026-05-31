@@ -59,6 +59,7 @@ from .guerrillamail_aliases import GrrLaClient, GuerrillamailInfoClient, Guerril
 from .tempdashmail_org import TempdashmailOrgClient
 from .tenminemail import TenminemailClient
 from .expressinboxhub import ExpressinboxhubClient
+from .moakt import MoaktClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -88,6 +89,7 @@ __all__ = [
     "TempdashmailOrgClient",
     "TenminemailClient",
     "ExpressinboxhubClient",
+    "MoaktClient",
     "TempEmail", "InboxEmail", "ETagCache",
     "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]
