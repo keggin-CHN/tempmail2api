@@ -65,6 +65,7 @@ from .byom import ByomClient
 from .tempmail_net import TempmailNetClient
 from .throwawaymail import ThrowawayMailClient
 from .minuteinbox import MinuteinboxClient
+from .disposablemail_com import DisposablemailComClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -100,6 +101,7 @@ __all__ = [
     "TempmailNetClient",
     "ThrowawayMailClient",
     "MinuteinboxClient",
+    "DisposablemailComClient",
     "TempEmail", "InboxEmail", "ETagCache",
     "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]

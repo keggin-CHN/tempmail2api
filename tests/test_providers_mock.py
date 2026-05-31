@@ -1795,3 +1795,24 @@ class TestMinuteinboxClient(unittest.TestCase):
         self.assertTrue(callable(c.generate_email))
         self.assertTrue(callable(c.list_emails))
         self.assertTrue(callable(c.get_email_detail))
+
+
+class TestDisposablemailComClient(unittest.TestCase):
+    """Test DisposablemailComClient"""
+
+    def test_inheritance(self):
+        from providers.disposablemail_com import DisposablemailComClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(DisposablemailComClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.disposablemail_com import DisposablemailComClient
+        c = DisposablemailComClient()
+        self.assertEqual(c.provider_name, 'disposablemail.com')
+
+    def test_has_methods(self):
+        from providers.disposablemail_com import DisposablemailComClient
+        c = DisposablemailComClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
