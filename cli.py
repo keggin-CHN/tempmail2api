@@ -72,6 +72,7 @@ from providers.internxt import InternxtClient
 from providers.lroid import LroidClient
 from providers.mail_temp import MailTempClient
 from providers.mailcatch import MailcatchClient
+from providers.sharklasers import SharklasersClient
 
 
 PROVIDERS = {
@@ -141,6 +142,7 @@ PROVIDERS = {
     "lroid": LroidClient,
     "mail-temp": MailTempClient,
     "mailcatch": MailcatchClient,
+    "sharklasers": SharklasersClient,
 }
 
 

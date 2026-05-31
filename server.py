@@ -79,6 +79,7 @@ from providers.internxt import InternxtClient
 from providers.lroid import LroidClient
 from providers.mail_temp import MailTempClient
 from providers.mailcatch import MailcatchClient
+from providers.sharklasers import SharklasersClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -149,6 +150,7 @@ PROVIDERS = {
     "lroid": LroidClient,
     "mail-temp": MailTempClient,
     "mailcatch": MailcatchClient,
+    "sharklasers": SharklasersClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

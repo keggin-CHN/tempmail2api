@@ -1564,3 +1564,17 @@ class TestMailcatchMock(unittest.TestCase):
         email = client.generate_email()
         self.assertTrue(email.address.endswith('@mailcatch.com'))
         self.assertEqual(email.provider, 'mailcatch')
+
+
+class TestSharklasersMock(unittest.TestCase):
+    """SharkLasers is a GuerrillaMail alias"""
+
+    def test_class_inheritance(self):
+        from providers.sharklasers import SharklasersClient
+        from providers.guerrillamail import GuerrillaMailClient
+        self.assertTrue(issubclass(SharklasersClient, GuerrillaMailClient))
+
+    def test_provider_name(self):
+        from providers.sharklasers import SharklasersClient
+        client = SharklasersClient()
+        self.assertEqual(client.provider_name, 'sharklasers')
