@@ -20,7 +20,9 @@ from typing import Optional
 from providers.base import TempMailClient
 from providers.boomlify import BoomlifyClient
 from providers.chatgptmail import ChatGPTMailClient
+from providers.emailnator import EmailnatorClient
 from providers.guerrillamail import GuerrillaMailClient
+from providers.mail_tm import MailTmClient
 from providers.tempmail_ing import TempMailIngClient
 
 
@@ -31,6 +33,9 @@ PROVIDERS = {
     "chatgptmail": ChatGPTMailClient,
     "guerrillamail": GuerrillaMailClient,
     "guerrilla": GuerrillaMailClient,
+    "mailtm": MailTmClient,
+    "mail.tm": MailTmClient,
+    "emailnator": EmailnatorClient,
 }
 
 
@@ -43,6 +48,10 @@ def detect_provider(address: str) -> Optional[str]:
         return "boomlify"
     if "guerrillamail" in domain or "guerrillamailblock" in domain or "grr.la" in domain:
         return "guerrillamail"
+    if domain == "mail.tm":
+        return "mailtm"
+    if domain == "gmail.com":
+        return "emailnator"
     # tempmail.ing 使用各种随机域名，无法从地址判断
     return None
 
@@ -65,6 +74,10 @@ def cmd_generate(args):
     """生成临时邮箱"""
     client = get_client(args.provider)
     email = client.generate_email(duration_minutes=args.duration, domain=args.domain)
+    if getattr(args, 'json', False):
+        import json
+        print(json.dumps(email.to_dict(), ensure_ascii=False))
+        return
     print(f"📧 邮箱地址: {email.address}")
     print(f"🏷️  Provider: {email.provider}")
     if email.expires_at:
@@ -86,6 +99,11 @@ def cmd_inbox(args):
     """查看收件箱"""
     client = get_client(args.provider, args.address)
     emails = client.list_emails(args.address)
+    if getattr(args, 'json', False):
+        import json
+        result = [e.to_dict() for e in emails]
+        print(json.dumps(result, ensure_ascii=False))
+        return
     print(f"📬 {args.address} 的收件箱 ({len(emails)} 封邮件)")
     print(f"   Provider: {client.provider_name}")
     print()

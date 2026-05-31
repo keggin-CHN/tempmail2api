@@ -27,7 +27,9 @@ from urllib.parse import urlparse, parse_qs
 
 from providers.boomlify import BoomlifyClient
 from providers.chatgptmail import ChatGPTMailClient
+from providers.emailnator import EmailnatorClient
 from providers.guerrillamail import GuerrillaMailClient
+from providers.mail_tm import MailTmClient
 from providers.tempmail_ing import TempMailIngClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -39,6 +41,9 @@ PROVIDERS = {
     "boomlify": BoomlifyClient,
     "chatgptmail": ChatGPTMailClient,
     "guerrillamail": GuerrillaMailClient,
+    "mailtm": MailTmClient,
+    "mail.tm": MailTmClient,
+    "emailnator": EmailnatorClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

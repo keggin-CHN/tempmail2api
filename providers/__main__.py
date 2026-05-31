@@ -5,7 +5,9 @@ python -m providers  — 列出所有可用的 provider
 from providers import (
     BoomlifyClient,
     ChatGPTMailClient,
+    EmailnatorClient,
     GuerrillaMailClient,
+    MailTmClient,
     TempMailIngClient,
 )
 
@@ -14,6 +16,8 @@ CLIENTS = [
     BoomlifyClient,
     ChatGPTMailClient,
     GuerrillaMailClient,
+    MailTmClient,
+    EmailnatorClient,
 ]
 
 def main():

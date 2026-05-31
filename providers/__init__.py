@@ -8,6 +8,8 @@ from .chatgptmail import ChatGPTMailClient
 from .tempmail_ing import TempMailIngClient
 from .boomlify import BoomlifyClient
 from .guerrillamail import GuerrillaMailClient
+from .mail_tm import MailTmClient
+from .emailnator import EmailnatorClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -17,6 +19,8 @@ __all__ = [
     "TempMailIngClient",
     "BoomlifyClient",
     "GuerrillaMailClient",
+    "MailTmClient",
+    "EmailnatorClient",
     # 数据模型
     "TempEmail",
     "InboxEmail",

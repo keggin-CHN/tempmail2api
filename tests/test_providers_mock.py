@@ -271,3 +271,148 @@ class TestGuerrillaMailClientMock(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestMailTmClientMock(unittest.TestCase):
+    """Mail.tm 客户端模拟测试"""
+
+    def test_provider_name(self):
+        from providers.mail_tm import MailTmClient
+        client = MailTmClient()
+        self.assertEqual(client.provider_name, "mail.tm")
+
+    @patch("providers.mail_tm.requests")
+    def test_generate_email(self, mock_requests):
+        from providers.mail_tm import MailTmClient
+
+        mock_domains = MagicMock()
+        mock_domains.json.return_value = {
+            "hydra:member": [{"domain": "mail.tm"}]
+        }
+        mock_domains.raise_for_status = MagicMock()
+
+        mock_account = MagicMock()
+        mock_account.json.return_value = {
+            "id": "acc-123",
+            "address": "testuser@mail.tm",
+        }
+        mock_account.raise_for_status = MagicMock()
+
+        mock_token = MagicMock()
+        mock_token.json.return_value = {"token": "jwt-token-123"}
+        mock_token.raise_for_status = MagicMock()
+
+        mock_session = MagicMock()
+        mock_session.request.side_effect = [mock_domains, mock_account, mock_token]
+        mock_requests.Session.return_value = mock_session
+
+        client = MailTmClient()
+        email = client.generate_email()
+        self.assertIn("@mail.tm", email.address)
+        self.assertEqual(email.provider, "mail.tm")
+
+    @patch("providers.mail_tm.requests")
+    def test_list_emails(self, mock_requests):
+        from providers.mail_tm import MailTmClient
+
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = {
+            "hydra:member": [
+                {
+                    "id": "msg-1",
+                    "subject": "Test Subject",
+                    "from": {"address": "sender@example.com", "name": "Sender"},
+                    "intro": "Hello world",
+                    "createdAt": "2026-01-01T00:00:00Z",
+                }
+            ]
+        }
+        mock_resp.raise_for_status = MagicMock()
+        mock_resp.status_code = 200
+
+        mock_session = MagicMock()
+        mock_session.request.return_value = mock_resp
+        mock_requests.Session.return_value = mock_session
+
+        client = MailTmClient()
+        client._token = "test-token"
+        emails = client.list_emails("test@mail.tm")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Test Subject")
+        self.assertEqual(emails[0].from_email, "sender@example.com")
+
+    @patch("providers.mail_tm.requests")
+    def test_delete_email(self, mock_requests):
+        from providers.mail_tm import MailTmClient
+
+        mock_resp = MagicMock()
+        mock_resp.raise_for_status = MagicMock()
+        mock_resp.status_code = 204
+
+        mock_session = MagicMock()
+        mock_session.request.return_value = mock_resp
+        mock_requests.Session.return_value = mock_session
+
+        client = MailTmClient()
+        client._token = "test-token"
+        result = client.delete_email("msg-1")
+        self.assertTrue(result)
+
+
+class TestEmailnatorClientMock(unittest.TestCase):
+    """Emailnator 客户端模拟测试"""
+
+    def test_provider_name(self):
+        from providers.emailnator import EmailnatorClient
+        client = EmailnatorClient()
+        self.assertEqual(client.provider_name, "emailnator")
+
+    @patch("providers.emailnator.requests")
+    def test_generate_email(self, mock_requests):
+        from providers.emailnator import EmailnatorClient
+
+        mock_home = MagicMock()
+        mock_home.raise_for_status = MagicMock()
+
+        mock_gen = MagicMock()
+        mock_gen.json.return_value = {"email": ["testuser@gmail.com"]}
+        mock_gen.raise_for_status = MagicMock()
+
+        mock_session = MagicMock()
+        mock_session.get.return_value = mock_home
+        mock_session.post.return_value = mock_gen
+
+        mock_requests.Session.return_value = mock_session
+
+        client = EmailnatorClient()
+        email = client.generate_email()
+        self.assertIn("@gmail.com", email.address)
+        self.assertEqual(email.provider, "emailnator")
+
+    @patch("providers.emailnator.requests")
+    def test_list_emails(self, mock_requests):
+        from providers.emailnator import EmailnatorClient
+
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = {
+            "messageData": [
+                {
+                    "messageID": "msg-1",
+                    "subject": "Verification Code",
+                    "from": "noreply@example.com",
+                    "textContent": "Your code is 123456",
+                    "date": "2026-01-01 00:00:00",
+                }
+            ]
+        }
+        mock_resp.raise_for_status = MagicMock()
+
+        mock_session = MagicMock()
+        mock_session.post.return_value = mock_resp
+        mock_requests.Session.return_value = mock_session
+
+        client = EmailnatorClient()
+        client._current_email = "test@gmail.com"
+        emails = client.list_emails("test@gmail.com")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Verification Code")

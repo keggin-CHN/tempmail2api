@@ -25,7 +25,9 @@ sys.path.insert(0, ".")
 from providers.base import InboxEmail, TempEmail, TempMailClient
 from providers.boomlify import BoomlifyClient
 from providers.chatgptmail import ChatGPTMailClient
+from providers.emailnator import EmailnatorClient
 from providers.guerrillamail import GuerrillaMailClient
+from providers.mail_tm import MailTmClient
 from providers.tempmail_ing import TempMailIngClient
 
 POLL_INTERVAL = 5
@@ -73,6 +75,8 @@ def main() -> None:
         "boomlify": BoomlifyClient,
         "chatgptmail": ChatGPTMailClient,
         "guerrillamail": GuerrillaMailClient,
+        "mailtm": MailTmClient,
+        "emailnator": EmailnatorClient,
     }
 
     # 命令行参数选择 provider
