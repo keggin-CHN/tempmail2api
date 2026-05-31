@@ -60,6 +60,8 @@ from providers.fakermail import FakermailClient
 from providers.mintemail import MintemailClient
 from providers.eztempmail import EztempmailClient
 from providers.tmail_gg import TmailGgClient
+from providers.tempemail_co import TempemailCoClient
+from providers.mailgolem import MailgolemClient
 
 POLL_INTERVAL = 5
 POLL_TIMEOUT = 120
@@ -139,6 +141,8 @@ def main() -> None:
         "mintemail": MintemailClient,
         "eztempmail": EztempmailClient,
         "tmail.gg": TmailGgClient,
+        "tempemail.co": TempemailCoClient,
+        "mailgolem": MailgolemClient,
     }
 
     # 命令行参数选择 provider

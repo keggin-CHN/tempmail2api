@@ -1222,3 +1222,50 @@ class TestTmailGgClient(unittest.TestCase):
         email = client.generate_email()
         self.assertIn("@tmail.gg", email.address)
         self.assertEqual(email.provider, "tmail.gg")
+
+
+class TestTempemailCoClient(unittest.TestCase):
+    """Tempemail.co provider test"""
+
+    def test_provider_name(self):
+        from providers.tempemail_co import TempemailCoClient
+        client = TempemailCoClient()
+        self.assertEqual(client.provider_name, "tempemail.co")
+
+    @patch("providers.tempemail_co.TempemailCoClient._get_domains", return_value=["tempemail.co"])
+    def test_generate_email(self, *args):
+        from providers.tempemail_co import TempemailCoClient
+        client = TempemailCoClient()
+        email = client.generate_email()
+        self.assertIn("@tempemail.co", email.address)
+        self.assertEqual(email.provider, "tempemail.co")
+
+
+class TestMailgolemClient(unittest.TestCase):
+    """Mailgolem.com provider test"""
+
+    def test_provider_name(self):
+        from providers.mailgolem import MailgolemClient
+        client = MailgolemClient()
+        self.assertEqual(client.provider_name, "mailgolem")
+
+    def test_generate_email(self):
+        from providers.mailgolem import MailgolemClient
+        client = MailgolemClient()
+        email = client.generate_email()
+        self.assertIn("@mailgolem.com", email.address)
+        self.assertEqual(email.provider, "mailgolem")
+
+    def test_list_emails(self):
+        from providers.mailgolem import MailgolemClient
+        client = MailgolemClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = [
+            {"id": "1", "from": "a@b.com", "subject": "Test", "created_at": "2025-01-01"}
+        ]
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        emails = client.list_emails("test@mailgolem.com")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Test")

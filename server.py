@@ -62,6 +62,8 @@ from providers.fakermail import FakermailClient
 from providers.mintemail import MintemailClient
 from providers.eztempmail import EztempmailClient
 from providers.tmail_gg import TmailGgClient
+from providers.tempemail_co import TempemailCoClient
+from providers.mailgolem import MailgolemClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -115,6 +117,8 @@ PROVIDERS = {
     "mintemail": MintemailClient,
     "eztempmail": EztempmailClient,
     "tmail.gg": TmailGgClient,
+    "tempemail.co": TempemailCoClient,
+    "mailgolem": MailgolemClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"
