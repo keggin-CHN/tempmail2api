@@ -1578,3 +1578,33 @@ class TestSharklasersMock(unittest.TestCase):
         from providers.sharklasers import SharklasersClient
         client = SharklasersClient()
         self.assertEqual(client.provider_name, 'sharklasers')
+
+
+class TestGuerrillamailAliasesMock(unittest.TestCase):
+    """GuerrillaMail aliases all inherit from GuerrillaMailClient"""
+
+    def test_grr_la_inheritance(self):
+        from providers.guerrillamail_aliases import GrrLaClient
+        from providers.guerrillamail import GuerrillaMailClient
+        self.assertTrue(issubclass(GrrLaClient, GuerrillaMailClient))
+        self.assertEqual(GrrLaClient().provider_name, 'grr.la')
+
+    def test_guerrillamail_info(self):
+        from providers.guerrillamail_aliases import GuerrillamailInfoClient
+        self.assertEqual(GuerrillamailInfoClient().provider_name, 'guerrillamail.info')
+
+    def test_guerrillamail_biz(self):
+        from providers.guerrillamail_aliases import GuerrillamailBizClient
+        self.assertEqual(GuerrillamailBizClient().provider_name, 'guerrillamail.biz')
+
+    def test_guerrillamail_net(self):
+        from providers.guerrillamail_aliases import GuerrillamailNetClient
+        self.assertEqual(GuerrillamailNetClient().provider_name, 'guerrillamail.net')
+
+    def test_guerrillamail_org(self):
+        from providers.guerrillamail_aliases import GuerrillamailOrgClient
+        self.assertEqual(GuerrillamailOrgClient().provider_name, 'guerrillamail.org')
+
+    def test_guerrillamailblock(self):
+        from providers.guerrillamail_aliases import GuerrillamailblockClient
+        self.assertEqual(GuerrillamailblockClient().provider_name, 'guerrillamailblock')

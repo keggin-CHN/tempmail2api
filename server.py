@@ -80,6 +80,7 @@ from providers.lroid import LroidClient
 from providers.mail_temp import MailTempClient
 from providers.mailcatch import MailcatchClient
 from providers.sharklasers import SharklasersClient
+from providers.guerrillamail_aliases import GrrLaClient, GuerrillamailInfoClient, GuerrillamailBizClient, GuerrillamailNetClient, GuerrillamailOrgClient, GuerrillamailblockClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -151,6 +152,12 @@ PROVIDERS = {
     "mail-temp": MailTempClient,
     "mailcatch": MailcatchClient,
     "sharklasers": SharklasersClient,
+    "grr.la": GrrLaClient,
+    "guerrillamail.info": GuerrillamailInfoClient,
+    "guerrillamail.biz": GuerrillamailBizClient,
+    "guerrillamail.net": GuerrillamailNetClient,
+    "guerrillamail.org": GuerrillamailOrgClient,
+    "guerrillamailblock": GuerrillamailblockClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"
