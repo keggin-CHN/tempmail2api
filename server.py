@@ -92,6 +92,7 @@ from providers.throwawaymail import ThrowawayMailClient
 from providers.minuteinbox import MinuteinboxClient
 from providers.disposablemail_com import DisposablemailComClient
 from providers.temporarymail import TemporarymailClient
+from providers.tempinbox_me import TempInboxMeClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -182,6 +183,7 @@ PROVIDERS = {
     "disposablemail.com": DisposablemailComClient,
     "temporarymail": TemporarymailClient,
     "temporarymail.com": TemporarymailClient,
+    "temp-inbox.me": TempInboxMeClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

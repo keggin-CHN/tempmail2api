@@ -85,6 +85,7 @@ from providers.throwawaymail import ThrowawayMailClient
 from providers.minuteinbox import MinuteinboxClient
 from providers.disposablemail_com import DisposablemailComClient
 from providers.temporarymail import TemporarymailClient
+from providers.tempinbox_me import TempInboxMeClient
 
 
 PROVIDERS = {
@@ -174,6 +175,7 @@ PROVIDERS = {
     "disposablemail.com": DisposablemailComClient,
     "temporarymail": TemporarymailClient,
     "temporarymail.com": TemporarymailClient,
+    "temp-inbox.me": TempInboxMeClient,
 }
 
 
