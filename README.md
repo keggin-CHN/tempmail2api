@@ -2,6 +2,10 @@
 
 > ⚡ 逆向解析多个临时邮箱平台的 Web API 协议，提供统一 Python 客户端 + HTTP API 服务。
 
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/Tests-passing-brightgreen.svg)](#端到端测试)
+
 ## 支持平台
 
 | 平台 | API Base | 认证方式 | 加密 | 状态 |
@@ -9,6 +13,7 @@
 | [mail.chatgpt.org.uk](https://mail.chatgpt.org.uk) | 同左 | 首页 Token | ❌ | ✅ |
 | [tempmail.ing](https://tempmail.ing) | `api.tempmail.ing` | 无 | ❌ | ✅ |
 | [boomlify.com](https://boomlify.com) | `v1.boomlify.com` | 公开 API | ✅ XOR | ✅ |
+| [guerrillamail.com](https://guerrillamail.com) | `api.guerrillamail.com` | Session | ❌ | ✅ |
 
 ## 快速开始
 
@@ -18,10 +23,16 @@
 pip install curl_cffi requests
 ```
 
+或使用 pyproject.toml:
+
+```bash
+pip install -e .
+```
+
 ### 2. Python 客户端
 
 ```python
-from providers import TempMailIngClient, BoomlifyClient, ChatGPTMailClient
+from providers import TempMailIngClient, BoomlifyClient, ChatGPTMailClient, GuerrillaMailClient
 
 # 任选一个 provider
 client = TempMailIngClient()
@@ -43,6 +54,7 @@ if received:
 python cli.py generate tempmail
 python cli.py generate boomlify
 python cli.py generate chatgptmail
+python cli.py generate guerrillamail
 
 # 查看收件箱
 python cli.py inbox user@domain.com
@@ -66,6 +78,9 @@ python server.py --host 0.0.0.0     # 允许外部访问
 **API 端点:**
 
 ```bash
+# 健康检查
+curl http://localhost:8787/api/health
+
 # 生成邮箱
 curl -X POST http://localhost:8787/api/generate \
   -H "Content-Type: application/json" \
@@ -102,12 +117,19 @@ python examples/demo_all.py chatgptmail  # 仅测试 chatgptmail
 │   ├── utils.py             # 重试、日志等工具
 │   ├── chatgptmail.py       # mail.chatgpt.org.uk 客户端
 │   ├── tempmail_ing.py      # tempmail.ing 客户端
-│   └── boomlify.py          # boomlify.com 客户端
+│   ├── boomlify.py          # boomlify.com 客户端
+│   └── guerrillamail.py     # guerrillamail.com 客户端
 ├── examples/
 │   └── demo_all.py          # 多平台端到端测试
+├── tests/
+│   ├── test_providers.py    # Provider 单元测试
+│   └── test_server.py       # API 服务集成测试
 ├── cli.py                   # CLI 命令行工具
 ├── server.py                # HTTP API 服务
 ├── demo.py                  # 原始 ChatGPTMail 测试脚本
+├── pyproject.toml           # 项目配置
+├── Dockerfile               # Docker 构建
+├── docker-compose.yml       # Docker Compose
 ├── API NOTES.md             # ChatGPTMail 协议文档
 ├── API_NOTES_TEMPMAIL_ING.md
 └── API_NOTES_BOOMLIFY.md
@@ -120,6 +142,31 @@ python examples/demo_all.py chatgptmail  # 仅测试 chatgptmail
 *   **XOR 解密**: Boomlify 响应使用 XOR 加密，密钥从前端 JS 提取
 *   **ETag 缓存**: TempMail.ing 支持 ETag 条件请求
 *   **指数退避重试**: 通用重试装饰器，支持自定义退避策略
+*   **自适应轮询**: `wait_for_email` 前 30 秒使用较短间隔（2s），之后恢复常规间隔
+
+## 运行测试
+
+```bash
+# 安装开发依赖
+pip install -e ".[dev]"
+
+# 运行所有测试
+python -m pytest tests/ -v
+
+# 运行测试并生成覆盖率报告
+python -m pytest tests/ -v --cov=providers --cov-report=term-missing
+```
+
+## Docker 部署
+
+```bash
+# 使用 Docker Compose
+docker compose up -d
+
+# 或手动构建
+docker build -t chatgptmail-2api .
+docker run -p 8787:8787 chatgptmail-2api
+```
 
 ## 协议文档
 
@@ -130,3 +177,7 @@ python examples/demo_all.py chatgptmail  # 仅测试 chatgptmail
 ## 免责声明
 
 本代码仅供协议研究与端到端测试学习使用。请遵循各目标站点的使用规范，勿用于恶意消耗公共资源或发送垃圾邮件。
+
+## License
+
+[MIT](LICENSE)

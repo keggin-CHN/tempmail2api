@@ -9,22 +9,25 @@
     python server.py --host 0.0.0.0     # 允许外部访问
 
 端点:
-    POST /api/generate                  生成临时邮箱
-    GET  /api/inbox?address=xxx         查看收件箱
+    GET  /api/health                 健康检查
+    POST /api/generate               生成临时邮箱
+    GET  /api/inbox?address=xxx      查看收件箱
     GET  /api/inbox?address=xxx&id=xxx  查看邮件详情
     GET  /api/domains?provider=boomlify 查看可用域名
-    GET  /api/providers                 列出支持的 provider
+    GET  /api/providers              列出支持的 provider
 """
 
 import argparse
 import json
 import logging
+import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from typing import Any, Dict
 from urllib.parse import urlparse, parse_qs
 
 from providers.boomlify import BoomlifyClient
 from providers.chatgptmail import ChatGPTMailClient
+from providers.guerrillamail import GuerrillaMailClient
 from providers.tempmail_ing import TempMailIngClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -35,9 +38,11 @@ PROVIDERS = {
     "tempmailing": TempMailIngClient,
     "boomlify": BoomlifyClient,
     "chatgptmail": ChatGPTMailClient,
+    "guerrillamail": GuerrillaMailClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"
+START_TIME = time.time()
 
 
 def json_response(handler: BaseHTTPRequestHandler, status: int, data: Any) -> None:
@@ -73,7 +78,9 @@ class APIHandler(BaseHTTPRequestHandler):
         path = parsed.path
         params = parse_qs(parsed.query)
 
-        if path == "/api/providers":
+        if path == "/api/health":
+            self._handle_health()
+        elif path == "/api/providers":
             self._handle_providers()
         elif path == "/api/inbox":
             self._handle_inbox(params)
@@ -82,8 +89,9 @@ class APIHandler(BaseHTTPRequestHandler):
         elif path == "/":
             json_response(self, 200, {
                 "service": "chatgptmail-2api",
-                "version": "2.0",
+                "version": "2.1.0",
                 "endpoints": [
+                    "GET /api/health",
                     "POST /api/generate",
                     "GET /api/inbox?address=xxx",
                     "GET /api/domains?provider=boomlify",
@@ -99,6 +107,14 @@ class APIHandler(BaseHTTPRequestHandler):
             self._handle_generate()
         else:
             json_response(self, 404, {"error": "Not found"})
+
+    def _handle_health(self):
+        uptime = time.time() - START_TIME
+        json_response(self, 200, {
+            "status": "ok",
+            "uptime_seconds": round(uptime, 1),
+            "providers": list(PROVIDERS.keys()),
+        })
 
     def _handle_providers(self):
         json_response(self, 200, {
