@@ -47,6 +47,11 @@ from .eyepaste import EyepasteClient
 from .segamail import SegamailClient
 from .tempmails_net import TempmailsNetClient
 from .tempmailso import TempmailsoClient
+from .haribu import HaribuClient
+from .incognitomail import IncognitomailClient
+from .tempmail_email import TempmailEmailClient
+from .internxt import InternxtClient
+from .lroid import LroidClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -65,6 +70,9 @@ __all__ = [
     "TempmailsoClient",
     "HaribuClient",
     "IncognitomailClient",
+    "TempmailEmailClient",
+    "InternxtClient",
+    "LroidClient",
     "TempEmail", "InboxEmail", "ETagCache",
     "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]

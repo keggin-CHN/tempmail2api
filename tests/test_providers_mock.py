@@ -1489,3 +1489,44 @@ class TestIncognitomailClient(unittest.TestCase):
         email = client.generate_email()
         self.assertEqual(email.address, "test@mailfast.pro")
         self.assertEqual(email.provider, "incognitomail")
+
+
+class TestTempmailEmailMock(unittest.TestCase):
+    """Tempmail.email uses Mail.tm API (same as MailTmClient)"""
+
+    def test_class_inheritance(self):
+        from providers.tempmail_email import TempmailEmailClient
+        from providers.mail_tm import MailTmClient
+        self.assertTrue(issubclass(TempmailEmailClient, MailTmClient))
+
+    def test_provider_name(self):
+        from providers.tempmail_email import TempmailEmailClient
+        client = TempmailEmailClient()
+        self.assertEqual(client.provider_name, 'tempmail.email')
+
+
+class TestInternxtMock(unittest.TestCase):
+    """Internxt uses Mail.tm API (same as MailTmClient)"""
+
+    def test_class_inheritance(self):
+        from providers.internxt import InternxtClient
+        from providers.mail_tm import MailTmClient
+        self.assertTrue(issubclass(InternxtClient, MailTmClient))
+
+    def test_provider_name(self):
+        from providers.internxt import InternxtClient
+        client = InternxtClient()
+        self.assertEqual(client.provider_name, 'internxt')
+
+
+class TestLroidMock(unittest.TestCase):
+    """Lroid uses Tempail pattern"""
+
+    def test_class_exists(self):
+        from providers.lroid import LroidClient
+        self.assertTrue(callable(LroidClient))
+
+    def test_provider_name(self):
+        from providers.lroid import LroidClient
+        client = LroidClient()
+        self.assertEqual(client.provider_name, 'lroid')

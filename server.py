@@ -74,6 +74,9 @@ from providers.tempmails_net import TempmailsNetClient
 from providers.tempmailso import TempmailsoClient
 from providers.haribu import HaribuClient
 from providers.incognitomail import IncognitomailClient
+from providers.tempmail_email import TempmailEmailClient
+from providers.internxt import InternxtClient
+from providers.lroid import LroidClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -139,6 +142,9 @@ PROVIDERS = {
     "tempmailso": TempmailsoClient,
     "haribu": HaribuClient,
     "incognitomail": IncognitomailClient,
+    "tempmail.email": TempmailEmailClient,
+    "internxt": InternxtClient,
+    "lroid": LroidClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

@@ -67,6 +67,9 @@ from providers.tempmails_net import TempmailsNetClient
 from providers.tempmailso import TempmailsoClient
 from providers.haribu import HaribuClient
 from providers.incognitomail import IncognitomailClient
+from providers.tempmail_email import TempmailEmailClient
+from providers.internxt import InternxtClient
+from providers.lroid import LroidClient
 
 
 PROVIDERS = {
@@ -131,6 +134,9 @@ PROVIDERS = {
     "tempmailso": TempmailsoClient,
     "haribu": HaribuClient,
     "incognitomail": IncognitomailClient,
+    "tempmail.email": TempmailEmailClient,
+    "internxt": InternxtClient,
+    "lroid": LroidClient,
 }
 
 
