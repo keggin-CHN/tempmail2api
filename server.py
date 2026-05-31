@@ -44,6 +44,7 @@ from providers.mailnesia import MailnesiaClient
 from providers.moakt import MoaktClient
 from providers.fakemail_net import FakemailNetClient
 from providers.emailfake import EmailfakeClient
+from providers.tempomail import TempomailClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -77,6 +78,7 @@ PROVIDERS = {
     "fakemailnet": FakemailNetClient,
     "fakemail.net": FakemailNetClient,
     "emailfake": EmailfakeClient,
+    "tempomail": TempomailClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

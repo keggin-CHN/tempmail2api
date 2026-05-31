@@ -42,6 +42,7 @@ from providers.mailnesia import MailnesiaClient
 from providers.moakt import MoaktClient
 from providers.fakemail_net import FakemailNetClient
 from providers.emailfake import EmailfakeClient
+from providers.tempomail import TempomailClient
 
 POLL_INTERVAL = 5
 POLL_TIMEOUT = 120
@@ -103,6 +104,7 @@ def main() -> None:
         "moakt": MoaktClient,
         "fakemailnet": FakemailNetClient,
         "emailfake": EmailfakeClient,
+        "tempomail": TempomailClient,
     }
 
     # 命令行参数选择 provider

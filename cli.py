@@ -37,6 +37,7 @@ from providers.mailnesia import MailnesiaClient
 from providers.moakt import MoaktClient
 from providers.fakemail_net import FakemailNetClient
 from providers.emailfake import EmailfakeClient
+from providers.tempomail import TempomailClient
 
 
 PROVIDERS = {
@@ -69,6 +70,7 @@ PROVIDERS = {
     "fakemailnet": FakemailNetClient,
     "fakemail.net": FakemailNetClient,
     "emailfake": EmailfakeClient,
+    "tempomail": TempomailClient,
 }
 
 

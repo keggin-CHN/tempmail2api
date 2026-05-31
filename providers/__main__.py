@@ -4,7 +4,7 @@ from providers import (
     FakemailNetClient, GuerrillaMailClient, HarakirimailClient, InboxesClient,
     MailGwClient, MailTmClient, MohmalClient, MoaktClient, MailnesiaClient,
     NoopmailClient, TempMailIngClient, TempMailLolClient, TempMailOrgClient,
-    TempMailPlusClient, YopmailClient,
+    TempMailPlusClient, TempomailClient, YopmailClient,
 )
 
 CLIENTS = [
@@ -12,7 +12,7 @@ CLIENTS = [
     MailTmClient, EmailnatorClient, MohmalClient, TempMailOrgClient,
     TempMailLolClient, YopmailClient, MailGwClient, HarakirimailClient,
     TempMailPlusClient, InboxesClient, NoopmailClient, MailnesiaClient,
-    MoaktClient, FakemailNetClient, EmailfakeClient,
+    MoaktClient, FakemailNetClient, EmailfakeClient, TempomailClient,
 ]
 
 def main():

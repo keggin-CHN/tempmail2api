@@ -830,3 +830,48 @@ class TestEmailfakeClient(unittest.TestCase):
         client._session.get.return_value = mock_resp
         emails = client.list_emails("test@tmpeml.com")
         self.assertIsInstance(emails, list)
+
+
+class TestTempomailClient(unittest.TestCase):
+    """Tempomail.top provider test"""
+
+    def test_provider_name(self):
+        from providers.tempomail import TempomailClient
+        client = TempomailClient()
+        self.assertEqual(client.provider_name, "tempomail")
+
+    def test_generate_email(self):
+        from providers.tempomail import TempomailClient
+        client = TempomailClient()
+        client._apikey = "test-key"
+        client._session = MagicMock()
+        # domains call
+        mock_domains = MagicMock()
+        mock_domains.status_code = 200
+        mock_domains.json.return_value = {"body": {"data": {"domains": [{"name": "tempomail.top"}]}}}
+        # create call
+        mock_create = MagicMock()
+        mock_create.status_code = 200
+        mock_create.json.return_value = {}
+        client._session.get.return_value = mock_domains
+        client._session.post.return_value = mock_create
+        email = client.generate_email()
+        self.assertIn("@tempomail.top", email.address)
+        self.assertEqual(email.provider, "tempomail")
+
+    def test_list_emails(self):
+        from providers.tempomail import TempomailClient
+        client = TempomailClient()
+        client._apikey = "test-key"
+        client._session = MagicMock()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {
+            "body": {"data": {"messages": {"rows": [
+                {"id": "1", "from": "a@b.com", "subject": "Test", "date": "2025-01-01"}
+            ]}}}
+        }
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@tempomail.top")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Test")
