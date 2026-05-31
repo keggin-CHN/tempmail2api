@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "chatgptmail-2api"
-version = "2.1.0"
+version = "3.6.0"
 description = "逆向解析多个临时邮箱平台的 Web API 协议，提供统一 Python 客户端 + HTTP API 服务"
 readme = "README.md"
 license = {text = "MIT"}

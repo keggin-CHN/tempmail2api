@@ -1,10 +1,10 @@
 # ChatGPTMail-2API
 
-📧 临时邮箱聚合 API — 支持 49 个临时邮箱服务商，提供统一的 OpenAI 兼容 API。
+📧 临时邮箱聚合 API — 支持 64 个临时邮箱服务商，提供统一的 OpenAI 兼容 API。
 
 ## 特性
 
-- **49 个 Provider** — 覆盖主流临时邮箱服务
+- **64 个 Provider** — 覆盖主流临时邮箱服务
 - **统一 API** — OpenAI 兼容格式
 - **浏览器模拟** — curl_cffi 绕过 Cloudflare
 - **速率限制** — 60 req/min per IP
