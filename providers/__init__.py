@@ -10,6 +10,7 @@ from .boomlify import BoomlifyClient
 from .guerrillamail import GuerrillaMailClient
 from .mail_tm import MailTmClient
 from .emailnator import EmailnatorClient
+from .mohmal import MohmalClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -21,6 +22,7 @@ __all__ = [
     "GuerrillaMailClient",
     "MailTmClient",
     "EmailnatorClient",
+    "MohmalClient",
     # 数据模型
     "TempEmail",
     "InboxEmail",

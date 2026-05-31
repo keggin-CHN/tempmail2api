@@ -28,6 +28,7 @@ from providers.chatgptmail import ChatGPTMailClient
 from providers.emailnator import EmailnatorClient
 from providers.guerrillamail import GuerrillaMailClient
 from providers.mail_tm import MailTmClient
+from providers.mohmal import MohmalClient
 from providers.tempmail_ing import TempMailIngClient
 
 POLL_INTERVAL = 5
@@ -77,6 +78,7 @@ def main() -> None:
         "guerrillamail": GuerrillaMailClient,
         "mailtm": MailTmClient,
         "emailnator": EmailnatorClient,
+        "mohmal": MohmalClient,
     }
 
     # 命令行参数选择 provider

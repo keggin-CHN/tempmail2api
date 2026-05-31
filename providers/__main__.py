@@ -8,6 +8,7 @@ from providers import (
     EmailnatorClient,
     GuerrillaMailClient,
     MailTmClient,
+    MohmalClient,
     TempMailIngClient,
 )
 
@@ -18,6 +19,7 @@ CLIENTS = [
     GuerrillaMailClient,
     MailTmClient,
     EmailnatorClient,
+    MohmalClient,
 ]
 
 def main():

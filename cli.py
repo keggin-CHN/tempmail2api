@@ -23,6 +23,7 @@ from providers.chatgptmail import ChatGPTMailClient
 from providers.emailnator import EmailnatorClient
 from providers.guerrillamail import GuerrillaMailClient
 from providers.mail_tm import MailTmClient
+from providers.mohmal import MohmalClient
 from providers.tempmail_ing import TempMailIngClient
 
 
@@ -36,6 +37,7 @@ PROVIDERS = {
     "mailtm": MailTmClient,
     "mail.tm": MailTmClient,
     "emailnator": EmailnatorClient,
+    "mohmal": MohmalClient,
 }
 
 
@@ -52,6 +54,8 @@ def detect_provider(address: str) -> Optional[str]:
         return "mailtm"
     if domain == "gmail.com":
         return "emailnator"
+    if "emailinbo" in domain or "mohmal" in domain:
+        return "mohmal"
     # tempmail.ing 使用各种随机域名，无法从地址判断
     return None
 

@@ -30,6 +30,7 @@ from providers.chatgptmail import ChatGPTMailClient
 from providers.emailnator import EmailnatorClient
 from providers.guerrillamail import GuerrillaMailClient
 from providers.mail_tm import MailTmClient
+from providers.mohmal import MohmalClient
 from providers.tempmail_ing import TempMailIngClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -44,6 +45,7 @@ PROVIDERS = {
     "mailtm": MailTmClient,
     "mail.tm": MailTmClient,
     "emailnator": EmailnatorClient,
+    "mohmal": MohmalClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"
