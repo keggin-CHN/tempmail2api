@@ -1082,3 +1082,73 @@ class TestTrashmailClient(unittest.TestCase):
         email = client.generate_email()
         self.assertIn("@trash-mail.com", email.address)
         self.assertEqual(email.provider, "trashmail")
+
+
+class TestOnesecmailClient(unittest.TestCase):
+    """1SecMail.com provider test"""
+
+    @patch("providers.onesecmail.OnesecmailClient._get_domains", return_value=["1secmail.com"])
+    def test_generate_email(self, *args):
+        from providers.onesecmail import OnesecmailClient
+        client = OnesecmailClient()
+        email = client.generate_email()
+        self.assertIn("@1secmail.com", email.address)
+        self.assertEqual(email.provider, "1secmail")
+
+    def test_list_emails(self):
+        from providers.onesecmail import OnesecmailClient
+        client = OnesecmailClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = [
+            {"id": 1, "from": "a@b.com", "subject": "Test", "date": "2025-01-01"}
+        ]
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@1secmail.com")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Test")
+
+    def test_get_email_detail(self):
+        from providers.onesecmail import OnesecmailClient
+        client = OnesecmailClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {
+            "id": 1, "from": "a@b.com", "subject": "Test", "date": "2025-01-01",
+            "body": "<p>Hi</p>", "textBody": "Hi"
+        }
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        detail = client.get_email_detail("test@1secmail.com", "1")
+        self.assertIsNotNone(detail)
+        self.assertEqual(detail.subject, "Test")
+        self.assertEqual(detail.body_html, "<p>Hi</p>")
+
+
+class TestMaildaxClient(unittest.TestCase):
+    """Maildax.com provider test"""
+
+    def test_generate_email(self):
+        from providers.maildax import MaildaxClient
+        client = MaildaxClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {"email": "test@maildax.com", "secret": "sec123"}
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        email = client.generate_email()
+        self.assertEqual(email.address, "test@maildax.com")
+        self.assertEqual(email.provider, "maildax")
+
+
+class TestFakermailClient(unittest.TestCase):
+    """Fakermail.com provider test"""
+
+    @patch("providers.fakermail.FakermailClient._get_domains", return_value=["fakermail.com"])
+    def test_generate_email(self, *args):
+        from providers.fakermail import FakermailClient
+        client = FakermailClient()
+        email = client.generate_email()
+        self.assertIn("@fakermail.com", email.address)
+        self.assertEqual(email.provider, "fakermail")

@@ -49,6 +49,9 @@ from providers.inboxkitten import InboxkittenClient
 from providers.disposablemail import DisposablemailClient
 from providers.fakemailgenerator import FakemailgeneratorClient
 from providers.trashmail import TrashmailClient
+from providers.onesecmail import OnesecmailClient
+from providers.maildax import MaildaxClient
+from providers.fakermail import FakermailClient
 
 
 PROVIDERS = {
@@ -94,6 +97,10 @@ PROVIDERS = {
     "disposablemail": DisposablemailClient,
     "fakemailgenerator": FakemailgeneratorClient,
     "trashmail": TrashmailClient,
+    "1secmail": OnesecmailClient,
+    "onesecmail": OnesecmailClient,
+    "maildax": MaildaxClient,
+    "fakermail": FakermailClient,
 }
 
 

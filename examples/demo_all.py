@@ -54,6 +54,9 @@ from providers.inboxkitten import InboxkittenClient
 from providers.disposablemail import DisposablemailClient
 from providers.fakemailgenerator import FakemailgeneratorClient
 from providers.trashmail import TrashmailClient
+from providers.onesecmail import OnesecmailClient
+from providers.maildax import MaildaxClient
+from providers.fakermail import FakermailClient
 
 POLL_INTERVAL = 5
 POLL_TIMEOUT = 120
@@ -127,6 +130,9 @@ def main() -> None:
         "disposablemail": DisposablemailClient,
         "fakemailgenerator": FakemailgeneratorClient,
         "trashmail": TrashmailClient,
+        "1secmail": OnesecmailClient,
+        "maildax": MaildaxClient,
+        "fakermail": FakermailClient,
     }
 
     # 命令行参数选择 provider

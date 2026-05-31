@@ -56,6 +56,9 @@ from providers.inboxkitten import InboxkittenClient
 from providers.disposablemail import DisposablemailClient
 from providers.fakemailgenerator import FakemailgeneratorClient
 from providers.trashmail import TrashmailClient
+from providers.onesecmail import OnesecmailClient
+from providers.maildax import MaildaxClient
+from providers.fakermail import FakermailClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -102,6 +105,10 @@ PROVIDERS = {
     "disposablemail": DisposablemailClient,
     "fakemailgenerator": FakemailgeneratorClient,
     "trashmail": TrashmailClient,
+    "1secmail": OnesecmailClient,
+    "onesecmail": OnesecmailClient,
+    "maildax": MaildaxClient,
+    "fakermail": FakermailClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"
