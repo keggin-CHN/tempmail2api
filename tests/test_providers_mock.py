@@ -1544,3 +1544,23 @@ class TestMailTempMock(unittest.TestCase):
         from providers.mail_temp import MailTempClient
         client = MailTempClient()
         self.assertEqual(client.provider_name, 'mail-temp')
+
+
+class TestMailcatchMock(unittest.TestCase):
+    """MailCatch.com provider test"""
+
+    def test_class_exists(self):
+        from providers.mailcatch import MailcatchClient
+        self.assertTrue(callable(MailcatchClient))
+
+    def test_provider_name(self):
+        from providers.mailcatch import MailcatchClient
+        client = MailcatchClient()
+        self.assertEqual(client.provider_name, 'mailcatch')
+
+    def test_generate_email(self):
+        from providers.mailcatch import MailcatchClient
+        client = MailcatchClient()
+        email = client.generate_email()
+        self.assertTrue(email.address.endswith('@mailcatch.com'))
+        self.assertEqual(email.provider, 'mailcatch')

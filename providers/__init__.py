@@ -53,6 +53,7 @@ from .tempmail_email import TempmailEmailClient
 from .internxt import InternxtClient
 from .lroid import LroidClient
 from .mail_temp import MailTempClient
+from .mailcatch import MailcatchClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -75,6 +76,7 @@ __all__ = [
     "InternxtClient",
     "LroidClient",
     "MailTempClient",
+    "MailcatchClient",
     "TempEmail", "InboxEmail", "ETagCache",
     "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]

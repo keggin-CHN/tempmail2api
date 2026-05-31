@@ -71,6 +71,7 @@ from providers.tempmail_email import TempmailEmailClient
 from providers.internxt import InternxtClient
 from providers.lroid import LroidClient
 from providers.mail_temp import MailTempClient
+from providers.mailcatch import MailcatchClient
 
 
 PROVIDERS = {
@@ -139,6 +140,7 @@ PROVIDERS = {
     "internxt": InternxtClient,
     "lroid": LroidClient,
     "mail-temp": MailTempClient,
+    "mailcatch": MailcatchClient,
 }
 
 
