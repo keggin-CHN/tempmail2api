@@ -56,8 +56,13 @@ class MailTmClient(TempMailClient):
         """获取可用域名列表"""
         if self._cached_domains is None:
             data = self._api_request("GET", "/domains")
-            members = data.get("hydra:member", [])
-            self._cached_domains = [d["domain"] for d in members if d.get("domain")]
+            if isinstance(data, list):
+                self._cached_domains = [d.get("domain", "") if isinstance(d, dict) else str(d) for d in data]
+            elif isinstance(data, dict):
+                members = data.get("hydra:member", [])
+                self._cached_domains = [d.get("domain", "") for d in members if isinstance(d, dict) and d.get("domain")]
+            else:
+                self._cached_domains = []
         return self._cached_domains
 
     @retry(max_attempts=3, backoff_factor=1.5, exceptions=(requests.RequestException,))
@@ -80,7 +85,10 @@ class MailTmClient(TempMailClient):
         except requests.RequestException as e:
             raise EmailGenerateError(f"mail.tm 创建账户失败: {e}") from e
 
-        self._account_id = data.get("id")
+        if isinstance(data, dict):
+            self._account_id = data.get("id")
+        else:
+            self._account_id = None
 
         # 获取 JWT token
         try:
@@ -88,7 +96,10 @@ class MailTmClient(TempMailClient):
                 "address": address,
                 "password": password,
             })
-            self._token = token_data.get("token")
+            if isinstance(token_data, dict):
+                self._token = token_data.get("token")
+            else:
+                self._token = None
         except requests.RequestException as e:
             raise EmailGenerateError(f"mail.tm 获取 token 失败: {e}") from e
 
@@ -127,7 +138,7 @@ class MailTmClient(TempMailClient):
         ]
 
     @retry(max_attempts=2, backoff_factor=1.0, exceptions=(requests.RequestException,))
-    def get_email_detail(self, email_id: str) -> InboxEmail:
+    def get_email_detail(self, address: str, email_id: str) -> InboxEmail:
         """获取邮件详情"""
         if not self._token:
             raise EmailFetchError("请先调用 generate_email()")

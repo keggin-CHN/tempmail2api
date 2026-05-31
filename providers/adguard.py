@@ -1,4 +1,4 @@
-"""Adguard.com tempmail provider — simple REST API."""
+"""Adguard.com tempmail provider — 需要 CAPTCHA，暂时禁用."""
 
 from typing import Optional
 

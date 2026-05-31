@@ -104,7 +104,7 @@ class TempMailLolClient(TempMailClient):
             for i, m in enumerate(messages)
         ]
 
-    def get_email_detail(self, email_id: str) -> InboxEmail:
+    def get_email_detail(self, address: str, email_id: str) -> InboxEmail:
         """获取邮件详情（list_emails 已包含完整内容）"""
         emails = self.list_emails(self._address or "")
         idx = int(email_id) if email_id.isdigit() else 0

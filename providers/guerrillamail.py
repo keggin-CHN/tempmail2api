@@ -111,7 +111,7 @@ class GuerrillaMailClient(TempMailClient):
         ]
 
     @retry(max_attempts=3, backoff_factor=1.0)
-    def get_email_detail(self, email_id: str) -> InboxEmail:
+    def get_email_detail(self, address: str, email_id: str) -> InboxEmail:
         """获取邮件详情"""
         self._ensure_session()
 

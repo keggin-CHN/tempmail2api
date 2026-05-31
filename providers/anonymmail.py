@@ -53,13 +53,16 @@ class AnonymmailClient(TempMailClient):
             emails_data = data.get(address, {}).get("emails", [])
             result = []
             for m in emails_data:
+                body = m.get("body", "")
+                is_html = bool(body and ("<html" in body.lower() or "<div" in body.lower() or "<span" in body.lower() or "<br" in body.lower()))
                 result.append(InboxEmail(
                     id=str(m.get("token", "")),
                     provider="anonymmail",
                     from_email=m.get("from", "unknown"),
                     subject=m.get("subject", "(no subject)"),
                     received_at=str(m.get("date", "")),
-                    body_text=m.get("body", ""),
+                    body_html=body if is_html else None,
+                    body_text=body if not is_html else None,
                 ))
             return result
         return []
