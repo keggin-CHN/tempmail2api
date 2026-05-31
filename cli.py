@@ -78,6 +78,7 @@ from providers.tempdashmail_org import TempdashmailOrgClient
 from providers.tenminemail import TenminemailClient
 from providers.expressinboxhub import ExpressinboxhubClient
 from providers.moakt import MoaktClient
+from providers.tempail import TempailClient
 
 
 PROVIDERS = {
@@ -158,6 +159,7 @@ PROVIDERS = {
     "10minemail": TenminemailClient,
     "expressinboxhub": ExpressinboxhubClient,
     "moakt": MoaktClient,
+    "tempail": TempailClient,
 }
 
 

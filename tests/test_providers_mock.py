@@ -1690,3 +1690,24 @@ class TestMoaktMock(unittest.TestCase):
         self.assertTrue(callable(c.generate_email))
         self.assertTrue(callable(c.list_emails))
         self.assertTrue(callable(c.get_email_detail))
+
+
+class TestTempailClient(unittest.TestCase):
+    """Test TempailClient"""
+
+    def test_inheritance(self):
+        from providers.tempail import TempailClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(TempailClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.tempail import TempailClient
+        c = TempailClient()
+        self.assertEqual(c.provider_name, 'tempail.com')
+
+    def test_has_methods(self):
+        from providers.tempail import TempailClient
+        c = TempailClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
