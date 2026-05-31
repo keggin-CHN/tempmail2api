@@ -45,6 +45,29 @@ DEFAULT_PROVIDER = "tempmail"
 START_TIME = time.time()
 
 
+class RateLimiter:
+    """简单的内存速率限制器（滑动窗口）"""
+
+    def __init__(self, max_requests: int = 60, window_seconds: int = 60):
+        self.max_requests = max_requests
+        self.window = window_seconds
+        self._requests: Dict[str, list] = {}
+
+    def is_allowed(self, key: str) -> bool:
+        now = time.time()
+        if key not in self._requests:
+            self._requests[key] = []
+        # 清理过期记录
+        self._requests[key] = [t for t in self._requests[key] if now - t < self.window]
+        if len(self._requests[key]) >= self.max_requests:
+            return False
+        self._requests[key].append(now)
+        return True
+
+
+rate_limiter = RateLimiter(max_requests=60, window_seconds=60)
+
+
 def json_response(handler: BaseHTTPRequestHandler, status: int, data: Any) -> None:
     """发送 JSON 响应"""
     body = json.dumps(data, ensure_ascii=False, default=str).encode("utf-8")
@@ -65,6 +88,17 @@ def get_client(provider_name: str = DEFAULT_PROVIDER):
 
 
 class APIHandler(BaseHTTPRequestHandler):
+    def _check_rate_limit(self) -> bool:
+        """检查速率限制，返回 True 表示允许"""
+        client_ip = self.client_address[0]
+        if not rate_limiter.is_allowed(client_ip):
+            json_response(self, 429, {
+                "error": "请求过于频繁，请稍后再试",
+                "retry_after_seconds": rate_limiter.window,
+            })
+            return False
+        return True
+
     def do_OPTIONS(self):
         """CORS preflight"""
         self.send_response(204)
@@ -74,6 +108,8 @@ class APIHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        if not self._check_rate_limit():
+            return
         parsed = urlparse(self.path)
         path = parsed.path
         params = parse_qs(parsed.query)
@@ -91,7 +127,7 @@ class APIHandler(BaseHTTPRequestHandler):
         elif path == "/":
             json_response(self, 200, {
                 "service": "chatgptmail-2api",
-                "version": "2.1.0",
+                "version": "2.2.0",
                 "endpoints": [
                     "GET /api/health",
                     "GET /api/docs (OpenAPI)",
@@ -105,6 +141,8 @@ class APIHandler(BaseHTTPRequestHandler):
             json_response(self, 404, {"error": "Not found"})
 
     def do_POST(self):
+        if not self._check_rate_limit():
+            return
         parsed = urlparse(self.path)
         if parsed.path == "/api/generate":
             self._handle_generate()
@@ -304,6 +342,7 @@ def main():
 
     server = HTTPServer((args.host, args.port), APIHandler)
     logger.info("🚀 API 服务启动: http://%s:%d", args.host, args.port)
+    logger.info("📋 可用端点: /api/health, /api/docs, /api/generate, /api/inbox, /api/domains, /api/providers")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
