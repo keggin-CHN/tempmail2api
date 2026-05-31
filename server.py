@@ -83,6 +83,7 @@ from providers.sharklasers import SharklasersClient
 from providers.guerrillamail_aliases import GrrLaClient, GuerrillamailInfoClient, GuerrillamailBizClient, GuerrillamailNetClient, GuerrillamailOrgClient, GuerrillamailblockClient
 from providers.tempdashmail_org import TempdashmailOrgClient
 from providers.tenminemail import TenminemailClient
+from providers.expressinboxhub import ExpressinboxhubClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -162,6 +163,7 @@ PROVIDERS = {
     "guerrillamailblock": GuerrillamailblockClient,
     "tempdashmail.org": TempdashmailOrgClient,
     "10minemail": TenminemailClient,
+    "expressinboxhub": ExpressinboxhubClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

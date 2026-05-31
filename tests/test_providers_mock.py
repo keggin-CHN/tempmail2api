@@ -1650,3 +1650,24 @@ class TestTenminemailMock(unittest.TestCase):
         self.assertTrue(callable(c.generate_email))
         self.assertTrue(callable(c.list_emails))
         self.assertTrue(callable(c.get_email_detail))
+
+
+class TestExpressinboxhubMock(unittest.TestCase):
+    """Test ExpressinboxhubClient"""
+
+    def test_inheritance(self):
+        from providers.expressinboxhub import ExpressinboxhubClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(ExpressinboxhubClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.expressinboxhub import ExpressinboxhubClient
+        c = ExpressinboxhubClient()
+        self.assertEqual(c.provider_name, 'expressinboxhub')
+
+    def test_has_methods(self):
+        from providers.expressinboxhub import ExpressinboxhubClient
+        c = ExpressinboxhubClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
