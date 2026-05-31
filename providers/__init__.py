@@ -1,113 +1,20 @@
-"""临时邮箱客户端统一接口 — 47 个 provider"""
-from .base import TempMailClient, TempEmail, InboxEmail
-from .chatgptmail import ChatGPTMailClient
-from .tempmail_ing import TempMailIngClient
-from .boomlify import BoomlifyClient
-from .guerrillamail import GuerrillaMailClient
-from .mail_tm import MailTmClient
-from .emailnator import EmailnatorClient
-from .mohmal import MohmalClient
-from .tempmail_lol import TempMailLolClient
-from .tempmail_org import TempMailOrgClient
-from .yopmail import YopmailClient
-from .mail_gw import MailGwClient
-from .harakirimail import HarakirimailClient
-from .tempmail_plus import TempMailPlusClient
-from .inboxes import InboxesClient
-from .noopmail import NoopmailClient
+"""Providers package — 4 个经过实测验证的临时邮箱 provider."""
+
+from .inboxkitten import InboxkittenClient as InboxKittenClient
 from .mailnesia import MailnesiaClient
-from .moakt import MoaktClient
-from .fakemail_net import FakemailNetClient
-from .emailfake import EmailfakeClient
-from .tempomail import TempomailClient
 from .anonymmail import AnonymmailClient
-from .emailondeck import EmailondeckClient
-from .etempmail import EtempmailClient
-from .tempm import TempmClient
-from .generator_email import GeneratorEmailClient
-from .emaildashfake import EmaildashfakeClient
-from .adguard import AdguardClient
-from .inboxkitten import InboxkittenClient
-from .disposablemail import DisposablemailClient
-from .fakemailgenerator import FakemailgeneratorClient
-from .trashmail import TrashmailClient
-from .onesecmail import OnesecmailClient
-from .maildax import MaildaxClient
-from .fakermail import FakermailClient
-from .mintemail import MintemailClient
-from .eztempmail import EztempmailClient
-from .tmail_gg import TmailGgClient
-from .tempemail_co import TempemailCoClient
-from .mailgolem import MailgolemClient
-from .muellmail import MuellmailClient
-from .mailsac import MailsacClient
-from .tempmail_guru import TempmailGuruClient
-from .crazymailing import CrazymailingClient
-from .eyepaste import EyepasteClient
-from .segamail import SegamailClient
-from .tempmails_net import TempmailsNetClient
-from .tempmailso import TempmailsoClient
-from .haribu import HaribuClient
-from .incognitomail import IncognitomailClient
-from .tempmail_email import TempmailEmailClient
-from .internxt import InternxtClient
-from .lroid import LroidClient
-from .mail_temp import MailTempClient
-from .mailcatch import MailcatchClient
-from .sharklasers import SharklasersClient
-from .guerrillamail_aliases import GrrLaClient, GuerrillamailInfoClient, GuerrillamailBizClient, GuerrillamailNetClient, GuerrillamailOrgClient, GuerrillamailblockClient
-from .tempdashmail_org import TempdashmailOrgClient
-from .tenminemail import TenminemailClient
-from .expressinboxhub import ExpressinboxhubClient
-from .moakt import MoaktClient
-from .tempail import TempailClient
-from .byom import ByomClient
-from .tempmail_net import TempmailNetClient
-from .throwawaymail import ThrowawayMailClient
-from .minuteinbox import MinuteinboxClient
-from .disposablemail_com import DisposablemailComClient
-from .temporarymail import TemporarymailClient
-from .tempinbox_me import TempInboxMeClient
-from .mail4qa import Mail4qaClient
+from .tempmail_lol import TempMailLolClient
+
+# Re-export base types
+from .base import TempMailClient, TempEmail, InboxEmail
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
-    "TempMailClient", "ChatGPTMailClient", "TempMailIngClient", "BoomlifyClient",
-    "GuerrillaMailClient", "MailTmClient", "EmailnatorClient", "MohmalClient",
-    "TempMailLolClient", "TempMailOrgClient", "YopmailClient", "MailGwClient",
-    "HarakirimailClient", "TempMailPlusClient", "InboxesClient", "NoopmailClient",
-    "MailnesiaClient", "MoaktClient", "FakemailNetClient", "EmailfakeClient",
-    "TempomailClient", "AnonymmailClient", "EmailondeckClient", "EtempmailClient",
-    "TempmClient", "GeneratorEmailClient", "EmaildashfakeClient", "AdguardClient",
-    "InboxkittenClient", "DisposablemailClient", "FakemailgeneratorClient",
-    "TrashmailClient", "OnesecmailClient", "MaildaxClient", "FakermailClient",
-    "MintemailClient", "EztempmailClient", "TmailGgClient", "TempemailCoClient",
-    "MailgolemClient", "MuellmailClient", "MailsacClient", "TempmailGuruClient",
-    "CrazymailingClient", "EyepasteClient", "SegamailClient", "TempmailsNetClient",
-    "TempmailsoClient",
-    "HaribuClient",
-    "IncognitomailClient",
-    "TempmailEmailClient",
-    "InternxtClient",
-    "LroidClient",
-    "MailTempClient",
-    "MailcatchClient",
-    "SharklasersClient",
-    "GrrLaClient", "GuerrillamailInfoClient", "GuerrillamailBizClient",
-    "GuerrillamailNetClient", "GuerrillamailOrgClient", "GuerrillamailblockClient",
-    "TempdashmailOrgClient",
-    "TenminemailClient",
-    "ExpressinboxhubClient",
-    "MoaktClient",
-    "TempailClient",
-    "ByomClient",
-    "TempmailNetClient",
-    "ThrowawayMailClient",
-    "MinuteinboxClient",
-    "DisposablemailComClient",
-    "TemporarymailClient",
-    "TempInboxMeClient",
-    "Mail4qaClient",
+    "TempMailClient",
+    "InboxKittenClient",
+    "MailnesiaClient",
+    "AnonymmailClient",
+    "TempMailLolClient",
     "TempEmail", "InboxEmail", "ETagCache",
     "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]

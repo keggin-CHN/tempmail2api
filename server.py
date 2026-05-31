@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-临时邮箱 HTTP API 服务
+临时邮箱 HTTP API 服务 — 4 个经实测验证的 provider
 基于 http.server，无需额外依赖
 
 启动:
@@ -13,7 +13,6 @@
     POST /api/generate               生成临时邮箱
     GET  /api/inbox?address=xxx      查看收件箱
     GET  /api/inbox?address=xxx&id=xxx  查看邮件详情
-    GET  /api/domains?provider=boomlify 查看可用域名
     GET  /api/providers              列出支持的 provider
 """
 
@@ -25,171 +24,23 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from typing import Any, Dict
 from urllib.parse import urlparse, parse_qs
 
-from providers.boomlify import BoomlifyClient
-from providers.chatgptmail import ChatGPTMailClient
-from providers.emailnator import EmailnatorClient
-from providers.guerrillamail import GuerrillaMailClient
-from providers.mail_tm import MailTmClient
-from providers.mohmal import MohmalClient
-from providers.tempmail_ing import TempMailIngClient
-from providers.tempmail_lol import TempMailLolClient
-from providers.tempmail_org import TempMailOrgClient
-from providers.yopmail import YopmailClient
-from providers.mail_gw import MailGwClient
-from providers.harakirimail import HarakirimailClient
-from providers.tempmail_plus import TempMailPlusClient
-from providers.inboxes import InboxesClient
-from providers.noopmail import NoopmailClient
+from providers.inboxkitten import InboxkittenClient as InboxKittenClient
 from providers.mailnesia import MailnesiaClient
-from providers.moakt import MoaktClient
-from providers.fakemail_net import FakemailNetClient
-from providers.emailfake import EmailfakeClient
-from providers.tempomail import TempomailClient
 from providers.anonymmail import AnonymmailClient
-from providers.emailondeck import EmailondeckClient
-from providers.etempmail import EtempmailClient
-from providers.tempm import TempmClient
-from providers.generator_email import GeneratorEmailClient
-from providers.emaildashfake import EmaildashfakeClient
-from providers.adguard import AdguardClient
-from providers.inboxkitten import InboxkittenClient
-from providers.disposablemail import DisposablemailClient
-from providers.fakemailgenerator import FakemailgeneratorClient
-from providers.trashmail import TrashmailClient
-from providers.onesecmail import OnesecmailClient
-from providers.maildax import MaildaxClient
-from providers.fakermail import FakermailClient
-from providers.mintemail import MintemailClient
-from providers.eztempmail import EztempmailClient
-from providers.tmail_gg import TmailGgClient
-from providers.tempemail_co import TempemailCoClient
-from providers.mailgolem import MailgolemClient
-from providers.muellmail import MuellmailClient
-from providers.mailsac import MailsacClient
-from providers.tempmail_guru import TempmailGuruClient
-from providers.crazymailing import CrazymailingClient
-from providers.eyepaste import EyepasteClient
-from providers.segamail import SegamailClient
-from providers.tempmails_net import TempmailsNetClient
-from providers.tempmailso import TempmailsoClient
-from providers.haribu import HaribuClient
-from providers.incognitomail import IncognitomailClient
-from providers.tempmail_email import TempmailEmailClient
-from providers.internxt import InternxtClient
-from providers.lroid import LroidClient
-from providers.mail_temp import MailTempClient
-from providers.mailcatch import MailcatchClient
-from providers.sharklasers import SharklasersClient
-from providers.guerrillamail_aliases import GrrLaClient, GuerrillamailInfoClient, GuerrillamailBizClient, GuerrillamailNetClient, GuerrillamailOrgClient, GuerrillamailblockClient
-from providers.tempdashmail_org import TempdashmailOrgClient
-from providers.tenminemail import TenminemailClient
-from providers.expressinboxhub import ExpressinboxhubClient
-from providers.moakt import MoaktClient
-from providers.tempail import TempailClient
-from providers.byom import ByomClient
-from providers.tempmail_net import TempmailNetClient
-from providers.throwawaymail import ThrowawayMailClient
-from providers.minuteinbox import MinuteinboxClient
-from providers.disposablemail_com import DisposablemailComClient
-from providers.temporarymail import TemporarymailClient
-from providers.tempinbox_me import TempInboxMeClient
-from providers.mail4qa import Mail4qaClient
+from providers.tempmail_lol import TempMailLolClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
 
 PROVIDERS = {
-    "tempmail": TempMailIngClient,
-    "tempmailing": TempMailIngClient,
-    "boomlify": BoomlifyClient,
-    "chatgptmail": ChatGPTMailClient,
-    "guerrillamail": GuerrillaMailClient,
-    "mailtm": MailTmClient,
-    "mail.tm": MailTmClient,
-    "emailnator": EmailnatorClient,
-    "mohmal": MohmalClient,
-    "tempmailorg": TempMailOrgClient,
-    "temp-mail.org": TempMailOrgClient,
+    "inboxkitten": InboxKittenClient,
+    "mailnesia": MailnesiaClient,
+    "anonymmail": AnonymmailClient,
     "tempmaillol": TempMailLolClient,
     "tempmail.lol": TempMailLolClient,
-    "yopmail": YopmailClient,
-    "mailgw": MailGwClient,
-    "mail.gw": MailGwClient,
-    "harakirimail": HarakirimailClient,
-    "harakiri": HarakirimailClient,
-    "tempmailplus": TempMailPlusClient,
-    "tempmail.plus": TempMailPlusClient,
-    "inboxes": InboxesClient,
-    "inboxes.com": InboxesClient,
-    "noopmail": NoopmailClient,
-    "mailnesia": MailnesiaClient,
-    "moakt": MoaktClient,
-    "fakemailnet": FakemailNetClient,
-    "fakemail.net": FakemailNetClient,
-    "emailfake": EmailfakeClient,
-    "tempomail": TempomailClient,
-    "anonymmail": AnonymmailClient,
-    "emailondeck": EmailondeckClient,
-    "etempmail": EtempmailClient,
-    "tempm": TempmClient,
-    "generator.email": GeneratorEmailClient,
-    "email-fake": EmaildashfakeClient,
-    "emaildashfake": EmaildashfakeClient,
-    "adguard": AdguardClient,
-    "inboxkitten": InboxkittenClient,
-    "disposablemail": DisposablemailClient,
-    "fakemailgenerator": FakemailgeneratorClient,
-    "trashmail": TrashmailClient,
-    "1secmail": OnesecmailClient,
-    "onesecmail": OnesecmailClient,
-    "maildax": MaildaxClient,
-    "fakermail": FakermailClient,
-    "mintemail": MintemailClient,
-    "eztempmail": EztempmailClient,
-    "tmail.gg": TmailGgClient,
-    "tempemail.co": TempemailCoClient,
-    "mailgolem": MailgolemClient,
-    "muellmail": MuellmailClient,
-    "mailsac": MailsacClient,
-    "tempmail.guru": TempmailGuruClient,
-    "crazymailing": CrazymailingClient,
-    "eyepaste": EyepasteClient,
-    "segamail": SegamailClient,
-    "tempmails.net": TempmailsNetClient,
-    "tempmailso": TempmailsoClient,
-    "haribu": HaribuClient,
-    "incognitomail": IncognitomailClient,
-    "tempmail.email": TempmailEmailClient,
-    "internxt": InternxtClient,
-    "lroid": LroidClient,
-    "mail-temp": MailTempClient,
-    "mailcatch": MailcatchClient,
-    "sharklasers": SharklasersClient,
-    "grr.la": GrrLaClient,
-    "guerrillamail.info": GuerrillamailInfoClient,
-    "guerrillamail.biz": GuerrillamailBizClient,
-    "guerrillamail.net": GuerrillamailNetClient,
-    "guerrillamail.org": GuerrillamailOrgClient,
-    "guerrillamailblock": GuerrillamailblockClient,
-    "tempdashmail.org": TempdashmailOrgClient,
-    "10minemail": TenminemailClient,
-    "expressinboxhub": ExpressinboxhubClient,
-    "moakt": MoaktClient,
-    "tempail": TempailClient,
-    "byom": ByomClient,
-    "tempmail.net": TempmailNetClient,
-    "tempmailnet": TempmailNetClient,
-    "throwawaymail": ThrowawayMailClient,
-    "minuteinbox": MinuteinboxClient,
-    "disposablemail.com": DisposablemailComClient,
-    "temporarymail": TemporarymailClient,
-    "temporarymail.com": TemporarymailClient,
-    "temp-inbox.me": TempInboxMeClient,
-    "mail4qa": Mail4qaClient,
-    "mail4qa.com": Mail4qaClient,
 }
 
-DEFAULT_PROVIDER = "tempmail"
+DEFAULT_PROVIDER = "inboxkitten"
 START_TIME = time.time()
 
 
@@ -205,7 +56,6 @@ class RateLimiter:
         now = time.time()
         if key not in self._requests:
             self._requests[key] = []
-        # 清理过期记录
         self._requests[key] = [t for t in self._requests[key] if now - t < self.window]
         if len(self._requests[key]) >= self.max_requests:
             return False
@@ -237,7 +87,6 @@ def get_client(provider_name: str = DEFAULT_PROVIDER):
 
 class APIHandler(BaseHTTPRequestHandler):
     def _check_rate_limit(self) -> bool:
-        """检查速率限制，返回 True 表示允许"""
         client_ip = self.client_address[0]
         if not rate_limiter.is_allowed(client_ip):
             json_response(self, 429, {
@@ -248,7 +97,6 @@ class APIHandler(BaseHTTPRequestHandler):
         return True
 
     def do_OPTIONS(self):
-        """CORS preflight"""
         self.send_response(204)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -270,18 +118,17 @@ class APIHandler(BaseHTTPRequestHandler):
             self._handle_providers()
         elif path == "/api/inbox":
             self._handle_inbox(params)
-        elif path == "/api/domains":
-            self._handle_domains(params)
         elif path == "/":
             json_response(self, 200, {
                 "service": "chatgptmail-2api",
-                "version": "2.2.0",
+                "version": "2.3.0",
+                "description": "4 个经实测验证的临时邮箱 provider",
+                "providers": list(PROVIDERS.keys()),
                 "endpoints": [
                     "GET /api/health",
                     "GET /api/docs (OpenAPI)",
                     "POST /api/generate",
                     "GET /api/inbox?address=xxx",
-                    "GET /api/domains?provider=boomlify",
                     "GET /api/providers",
                 ],
             })
@@ -311,14 +158,11 @@ class APIHandler(BaseHTTPRequestHandler):
             "info": {
                 "title": "chatgptmail-2api",
                 "version": "2.3.0",
-                "description": "多平台临时邮箱 HTTP API 服务",
+                "description": "4 个经实测验证的临时邮箱 provider (InboxKitten, Mailnesia, Anonymmail, TempMail.lol)",
             },
             "paths": {
                 "/api/health": {
-                    "get": {
-                        "summary": "健康检查",
-                        "responses": {"200": {"description": "服务状态"}}
-                    }
+                    "get": {"summary": "健康检查", "responses": {"200": {"description": "服务状态"}}}
                 },
                 "/api/generate": {
                     "post": {
@@ -330,8 +174,6 @@ class APIHandler(BaseHTTPRequestHandler):
                                         "type": "object",
                                         "properties": {
                                             "provider": {"type": "string", "enum": list(PROVIDERS.keys()), "default": DEFAULT_PROVIDER},
-                                            "duration": {"type": "integer", "default": 10},
-                                            "domain": {"type": "string"},
                                         }
                                     }
                                 }
@@ -351,20 +193,8 @@ class APIHandler(BaseHTTPRequestHandler):
                         "responses": {"200": {"description": "邮件列表或详情"}}
                     }
                 },
-                "/api/domains": {
-                    "get": {
-                        "summary": "查看可用域名",
-                        "parameters": [
-                            {"name": "provider", "in": "query", "schema": {"type": "string"}},
-                        ],
-                        "responses": {"200": {"description": "域名列表"}}
-                    }
-                },
                 "/api/providers": {
-                    "get": {
-                        "summary": "列出支持的 provider",
-                        "responses": {"200": {"description": "provider 列表"}}
-                    }
+                    "get": {"summary": "列出支持的 provider", "responses": {"200": {"description": "provider 列表"}}}
                 },
             }
         }
@@ -374,6 +204,7 @@ class APIHandler(BaseHTTPRequestHandler):
         json_response(self, 200, {
             "providers": list(PROVIDERS.keys()),
             "default": DEFAULT_PROVIDER,
+            "verified": ["inboxkitten", "mailnesia", "anonymmail", "tempmaillol"],
         })
 
     def _handle_generate(self):
@@ -385,19 +216,15 @@ class APIHandler(BaseHTTPRequestHandler):
                 body = json.loads(raw)
 
             provider = body.get("provider", DEFAULT_PROVIDER)
-            duration = body.get("duration", 10)
-            domain = body.get("domain")
-
             client = get_client(provider)
             if not client:
-                json_response(self, 400, {"error": f"未知 provider: {provider}"})
+                json_response(self, 400, {"error": f"未知 provider: {provider}，可选: {list(PROVIDERS.keys())}"})
                 return
 
-            email = client.generate_email(duration_minutes=duration, domain=domain)
+            email = client.generate_email()
             json_response(self, 200, {
                 "address": email.address,
                 "provider": email.provider,
-                "expires_at": email.expires_at,
                 "created_at": email.created_at,
             })
         except Exception as e:
@@ -420,15 +247,15 @@ class APIHandler(BaseHTTPRequestHandler):
                 return
 
             if email_id:
-                detail = client.get_email_detail(email_id)
+                detail = client.get_email_detail(address, email_id)
                 json_response(self, 200, {
                     "id": detail.id,
                     "subject": detail.subject,
-                    "from_email": detail.from_email,
-                    "from_name": detail.from_name,
+                    "from_address": detail.from_address,
                     "body_html": detail.body_html,
                     "body_text": detail.body_text,
-                    "received_at": detail.received_at,
+                    "date": detail.date,
+                    "provider": detail.provider,
                 })
             else:
                 emails = client.list_emails(address)
@@ -440,42 +267,14 @@ class APIHandler(BaseHTTPRequestHandler):
                         {
                             "id": e.id,
                             "subject": e.subject,
-                            "from_email": e.from_email,
-                            "from_name": e.from_name,
-                            "received_at": e.received_at,
+                            "from_address": e.from_address,
+                            "date": e.date,
                         }
                         for e in emails
                     ],
                 })
         except Exception as e:
             logger.exception("查看收件箱失败")
-            json_response(self, 500, {"error": str(e)})
-
-    def _handle_domains(self, params):
-        try:
-            provider = params.get("provider", ["boomlify"])[0]
-            if provider != "boomlify":
-                json_response(self, 400, {"error": "目前只有 boomlify 支持域名列表"})
-                return
-
-            client = BoomlifyClient()
-            domains = client.get_public_domains()
-            json_response(self, 200, {
-                "provider": provider,
-                "count": len(domains),
-                "domains": [
-                    {
-                        "id": d.get("id"),
-                        "domain": d.get("domain"),
-                        "is_active": bool(d.get("is_active")),
-                        "is_edu": bool(d.get("is_edu")),
-                        "is_premium": bool(d.get("is_premium")),
-                    }
-                    for d in domains
-                ],
-            })
-        except Exception as e:
-            logger.exception("获取域名失败")
             json_response(self, 500, {"error": str(e)})
 
     def log_message(self, format, *args):
@@ -490,7 +289,7 @@ def main():
 
     server = HTTPServer((args.host, args.port), APIHandler)
     logger.info("🚀 API 服务启动: http://%s:%d", args.host, args.port)
-    logger.info("📋 可用端点: /api/health, /api/docs, /api/generate, /api/inbox, /api/domains, /api/providers")
+    logger.info("📋 Provider: inboxkitten, mailnesia, anonymmail, tempmaillol")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

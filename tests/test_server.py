@@ -1,5 +1,5 @@
 """
-API 服务集成测试
+API 服务集成测试 — 4 个经实测验证的 provider
 运行: python -m pytest tests/test_server.py -v
 """
 
@@ -58,21 +58,11 @@ class TestAPIServer(unittest.TestCase):
     def test_providers_endpoint(self):
         status, body = self._get("/api/providers")
         self.assertEqual(status, 200)
-        self.assertIn("tempmail", body["providers"])
-        self.assertIn("boomlify", body["providers"])
-        self.assertIn("chatgptmail", body["providers"])
-
-    def test_generate_tempmail(self):
-        status, body = self._post("/api/generate", {"provider": "tempmail", "duration": 10})
-        self.assertEqual(status, 200)
-        self.assertIn("@", body["address"])
-        self.assertEqual(body["provider"], "tempmail.ing")
-
-    def test_generate_boomlify(self):
-        status, body = self._post("/api/generate", {"provider": "boomlify"})
-        self.assertEqual(status, 200)
-        self.assertIn("@", body["address"])
-        self.assertEqual(body["provider"], "boomlify")
+        self.assertIn("inboxkitten", body["providers"])
+        self.assertIn("mailnesia", body["providers"])
+        self.assertIn("anonymmail", body["providers"])
+        self.assertIn("tempmaillol", body["providers"])
+        self.assertIn("verified", body)
 
     def test_generate_unknown_provider(self):
         status, body = self._post("/api/generate", {"provider": "nonexistent"})
@@ -83,12 +73,6 @@ class TestAPIServer(unittest.TestCase):
         status, body = self._get("/api/inbox")
         self.assertEqual(status, 400)
         self.assertIn("error", body)
-
-    def test_domains_boomlify(self):
-        status, body = self._get("/api/domains?provider=boomlify")
-        self.assertEqual(status, 200)
-        self.assertGreater(body["count"], 0)
-        self.assertTrue(all("domain" in d for d in body["domains"]))
 
     def test_not_found(self):
         status, body = self._get("/api/nonexistent")
@@ -101,7 +85,7 @@ class TestAPIServer(unittest.TestCase):
         self.assertIn("uptime_seconds", body)
         self.assertIn("providers", body)
         self.assertIsInstance(body["providers"], list)
-        self.assertGreater(len(body["providers"]), 0)
+        self.assertEqual(len(body["providers"]), 5)  # 4 个 provider + tempmail.lol 别名
 
     def test_openapi_docs_endpoint(self):
         status, body = self._get("/api/docs")
@@ -112,11 +96,6 @@ class TestAPIServer(unittest.TestCase):
         self.assertIn("/api/health", body["paths"])
         self.assertIn("/api/generate", body["paths"])
         self.assertIn("/api/inbox", body["paths"])
-
-    def test_providers_include_guerrillamail(self):
-        status, body = self._get("/api/providers")
-        self.assertEqual(status, 200)
-        self.assertIn("guerrillamail", body["providers"])
 
     def test_cors_preflight(self):
         import http.client
