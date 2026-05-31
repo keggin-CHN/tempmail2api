@@ -88,6 +88,7 @@ from providers.moakt import MoaktClient
 from providers.tempail import TempailClient
 from providers.byom import ByomClient
 from providers.tempmail_net import TempmailNetClient
+from providers.throwawaymail import ThrowawayMailClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -173,6 +174,7 @@ PROVIDERS = {
     "byom": ByomClient,
     "tempmail.net": TempmailNetClient,
     "tempmailnet": TempmailNetClient,
+    "throwawaymail": ThrowawayMailClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

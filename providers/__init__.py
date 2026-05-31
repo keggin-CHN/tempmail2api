@@ -63,6 +63,7 @@ from .moakt import MoaktClient
 from .tempail import TempailClient
 from .byom import ByomClient
 from .tempmail_net import TempmailNetClient
+from .throwawaymail import ThrowawayMailClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -96,6 +97,7 @@ __all__ = [
     "TempailClient",
     "ByomClient",
     "TempmailNetClient",
+    "ThrowawayMailClient",
     "TempEmail", "InboxEmail", "ETagCache",
     "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]

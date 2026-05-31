@@ -1753,3 +1753,24 @@ class TestTempmailNetClient(unittest.TestCase):
         self.assertTrue(callable(c.generate_email))
         self.assertTrue(callable(c.list_emails))
         self.assertTrue(callable(c.get_email_detail))
+
+
+class TestThrowawayMailClient(unittest.TestCase):
+    """Test ThrowawayMailClient"""
+
+    def test_inheritance(self):
+        from providers.throwawaymail import ThrowawayMailClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(ThrowawayMailClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.throwawaymail import ThrowawayMailClient
+        c = ThrowawayMailClient()
+        self.assertEqual(c.provider_name, 'throwawaymail.app')
+
+    def test_has_methods(self):
+        from providers.throwawaymail import ThrowawayMailClient
+        c = ThrowawayMailClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
