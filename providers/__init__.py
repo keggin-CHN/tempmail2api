@@ -56,6 +56,7 @@ from .mail_temp import MailTempClient
 from .mailcatch import MailcatchClient
 from .sharklasers import SharklasersClient
 from .guerrillamail_aliases import GrrLaClient, GuerrillamailInfoClient, GuerrillamailBizClient, GuerrillamailNetClient, GuerrillamailOrgClient, GuerrillamailblockClient
+from .tempdashmail_org import TempdashmailOrgClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -82,6 +83,7 @@ __all__ = [
     "SharklasersClient",
     "GrrLaClient", "GuerrillamailInfoClient", "GuerrillamailBizClient",
     "GuerrillamailNetClient", "GuerrillamailOrgClient", "GuerrillamailblockClient",
+    "TempdashmailOrgClient",
     "TempEmail", "InboxEmail", "ETagCache",
     "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]

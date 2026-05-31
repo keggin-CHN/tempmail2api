@@ -1608,3 +1608,24 @@ class TestGuerrillamailAliasesMock(unittest.TestCase):
     def test_guerrillamailblock(self):
         from providers.guerrillamail_aliases import GuerrillamailblockClient
         self.assertEqual(GuerrillamailblockClient().provider_name, 'guerrillamailblock')
+
+
+class TestTempdashmailOrgMock(unittest.TestCase):
+    """Test TempdashmailOrgClient using web2.temp-mail.org API"""
+
+    def test_inheritance(self):
+        from providers.tempdashmail_org import TempdashmailOrgClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(TempdashmailOrgClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.tempdashmail_org import TempdashmailOrgClient
+        c = TempdashmailOrgClient()
+        self.assertEqual(c.provider_name, 'tempdashmail.org')
+
+    def test_has_methods(self):
+        from providers.tempdashmail_org import TempdashmailOrgClient
+        c = TempdashmailOrgClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
