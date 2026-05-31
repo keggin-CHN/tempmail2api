@@ -1324,3 +1324,74 @@ class TestMailsacClient(unittest.TestCase):
         email = client.generate_email()
         self.assertIn("@mailsac.com", email.address)
         self.assertEqual(email.provider, "mailsac")
+
+
+class TestTempmailGuruClient(unittest.TestCase):
+    """Tempmail.guru provider test"""
+
+    def test_provider_name(self):
+        from providers.tempmail_guru import TempmailGuruClient
+        client = TempmailGuruClient()
+        self.assertEqual(client.provider_name, "tempmail.guru")
+
+    @patch("providers.tempmail_guru.TempmailGuruClient._get_domains", return_value=["tempmail.guru"])
+    def test_generate_email(self, *args):
+        from providers.tempmail_guru import TempmailGuruClient
+        client = TempmailGuruClient()
+        client._token = "test-token"
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        email = client.generate_email()
+        self.assertIn("@tempmail.guru", email.address)
+        self.assertEqual(email.provider, "tempmail.guru")
+
+
+class TestCrazymailingClient(unittest.TestCase):
+    """Crazymailing.com provider test"""
+
+    def test_provider_name(self):
+        from providers.crazymailing import CrazymailingClient
+        client = CrazymailingClient()
+        self.assertEqual(client.provider_name, "crazymailing")
+
+    @patch("providers.crazymailing.CrazymailingClient._get_domains", return_value=["crazymailing.com"])
+    def test_generate_email(self, *args):
+        from providers.crazymailing import CrazymailingClient
+        client = CrazymailingClient()
+        client._token = "test-token"
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        email = client.generate_email()
+        self.assertIn("@crazymailing.com", email.address)
+        self.assertEqual(email.provider, "crazymailing")
+
+
+class TestEyepasteClient(unittest.TestCase):
+    """Eyepaste.com provider test"""
+
+    def test_provider_name(self):
+        from providers.eyepaste import EyepasteClient
+        client = EyepasteClient()
+        self.assertEqual(client.provider_name, "eyepaste")
+
+    def test_generate_email(self):
+        from providers.eyepaste import EyepasteClient
+        client = EyepasteClient()
+        email = client.generate_email()
+        self.assertIn("@eyepaste.com", email.address)
+        self.assertEqual(email.provider, "eyepaste")
+
+    def test_list_emails_empty(self):
+        from providers.eyepaste import EyepasteClient
+        client = EyepasteClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = '<?xml version="1.0"?><rss><channel><title>inbox</title></channel></rss>'
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@eyepaste.com")
+        self.assertEqual(len(emails), 0)

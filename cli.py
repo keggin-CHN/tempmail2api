@@ -59,6 +59,9 @@ from providers.tempemail_co import TempemailCoClient
 from providers.mailgolem import MailgolemClient
 from providers.muellmail import MuellmailClient
 from providers.mailsac import MailsacClient
+from providers.tempmail_guru import TempmailGuruClient
+from providers.crazymailing import CrazymailingClient
+from providers.eyepaste import EyepasteClient
 
 
 PROVIDERS = {
@@ -115,6 +118,9 @@ PROVIDERS = {
     "mailgolem": MailgolemClient,
     "muellmail": MuellmailClient,
     "mailsac": MailsacClient,
+    "tempmail.guru": TempmailGuruClient,
+    "crazymailing": CrazymailingClient,
+    "eyepaste": EyepasteClient,
 }
 
 
