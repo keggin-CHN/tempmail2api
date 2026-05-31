@@ -16,7 +16,11 @@ class MoaktClient(TempMailClient):
     BASE_URL = "https://moakt.com"
 
     def __init__(self):
-        self._session = requests.Session()
+        try:
+            from curl_cffi import requests as curl_requests
+            self._session = curl_requests.Session(impersonate="chrome136")
+        except ImportError:
+            self._session = requests.Session()
         self._session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         })
