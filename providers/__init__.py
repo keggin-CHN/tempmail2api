@@ -68,6 +68,7 @@ from .minuteinbox import MinuteinboxClient
 from .disposablemail_com import DisposablemailComClient
 from .temporarymail import TemporarymailClient
 from .tempinbox_me import TempInboxMeClient
+from .mail4qa import Mail4qaClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -106,6 +107,7 @@ __all__ = [
     "DisposablemailComClient",
     "TemporarymailClient",
     "TempInboxMeClient",
+    "Mail4qaClient",
     "TempEmail", "InboxEmail", "ETagCache",
     "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]

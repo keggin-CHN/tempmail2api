@@ -1858,3 +1858,24 @@ class TestTempInboxMeClient(unittest.TestCase):
         self.assertTrue(callable(c.generate_email))
         self.assertTrue(callable(c.list_emails))
         self.assertTrue(callable(c.get_email_detail))
+
+
+class TestMail4qaClient(unittest.TestCase):
+    """Test Mail4qaClient"""
+
+    def test_inheritance(self):
+        from providers.mail4qa import Mail4qaClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(Mail4qaClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.mail4qa import Mail4qaClient
+        c = Mail4qaClient()
+        self.assertEqual(c.provider_name, 'mail4qa.com')
+
+    def test_has_methods(self):
+        from providers.mail4qa import Mail4qaClient
+        c = Mail4qaClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
