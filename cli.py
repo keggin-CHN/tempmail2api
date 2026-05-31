@@ -52,6 +52,9 @@ from providers.trashmail import TrashmailClient
 from providers.onesecmail import OnesecmailClient
 from providers.maildax import MaildaxClient
 from providers.fakermail import FakermailClient
+from providers.mintemail import MintemailClient
+from providers.eztempmail import EztempmailClient
+from providers.tmail_gg import TmailGgClient
 
 
 PROVIDERS = {
@@ -101,6 +104,9 @@ PROVIDERS = {
     "onesecmail": OnesecmailClient,
     "maildax": MaildaxClient,
     "fakermail": FakermailClient,
+    "mintemail": MintemailClient,
+    "eztempmail": EztempmailClient,
+    "tmail.gg": TmailGgClient,
 }
 
 

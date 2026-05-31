@@ -57,6 +57,9 @@ from providers.trashmail import TrashmailClient
 from providers.onesecmail import OnesecmailClient
 from providers.maildax import MaildaxClient
 from providers.fakermail import FakermailClient
+from providers.mintemail import MintemailClient
+from providers.eztempmail import EztempmailClient
+from providers.tmail_gg import TmailGgClient
 
 POLL_INTERVAL = 5
 POLL_TIMEOUT = 120
@@ -133,6 +136,9 @@ def main() -> None:
         "1secmail": OnesecmailClient,
         "maildax": MaildaxClient,
         "fakermail": FakermailClient,
+        "mintemail": MintemailClient,
+        "eztempmail": EztempmailClient,
+        "tmail.gg": TmailGgClient,
     }
 
     # 命令行参数选择 provider

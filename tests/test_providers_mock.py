@@ -1152,3 +1152,73 @@ class TestFakermailClient(unittest.TestCase):
         email = client.generate_email()
         self.assertIn("@fakermail.com", email.address)
         self.assertEqual(email.provider, "fakermail")
+
+
+class TestMintemailClient(unittest.TestCase):
+    """MintEmail.com provider test"""
+
+    def test_provider_name(self):
+        from providers.mintemail import MintemailClient
+        client = MintemailClient()
+        self.assertEqual(client.provider_name, "mintemail")
+
+    def test_generate_email(self):
+        from providers.mintemail import MintemailClient
+        client = MintemailClient()
+        email = client.generate_email()
+        self.assertIn("@cj.MintEmail.com", email.address)
+        self.assertEqual(email.provider, "mintemail")
+
+    def test_list_emails_empty(self):
+        from providers.mintemail import MintemailClient
+        client = MintemailClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = " "
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@cj.MintEmail.com")
+        self.assertEqual(len(emails), 0)
+
+    def test_list_emails_with_ids(self):
+        from providers.mintemail import MintemailClient
+        client = MintemailClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = ",123,456"
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@cj.MintEmail.com")
+        self.assertEqual(len(emails), 2)
+        self.assertEqual(emails[0].id, "123")
+
+
+class TestEztempmailClient(unittest.TestCase):
+    """Eztempmail.com provider test"""
+
+    def test_provider_name(self):
+        from providers.eztempmail import EztempmailClient
+        client = EztempmailClient()
+        self.assertEqual(client.provider_name, "eztempmail")
+
+
+class TestTmailGgClient(unittest.TestCase):
+    """Tmail.gg provider test"""
+
+    def test_provider_name(self):
+        from providers.tmail_gg import TmailGgClient
+        client = TmailGgClient()
+        self.assertEqual(client.provider_name, "tmail.gg")
+
+    @patch("providers.tmail_gg.TmailGgClient._get_domains", return_value=["tmail.gg"])
+    def test_generate_email(self, *args):
+        from providers.tmail_gg import TmailGgClient
+        client = TmailGgClient()
+        client._token = "test-token"
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        email = client.generate_email()
+        self.assertIn("@tmail.gg", email.address)
+        self.assertEqual(email.provider, "tmail.gg")
