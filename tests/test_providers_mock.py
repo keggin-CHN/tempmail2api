@@ -1447,3 +1447,45 @@ class TestTempmailsoClient(unittest.TestCase):
         email = client.generate_email()
         self.assertIn("@tempmailso.com", email.address)
         self.assertEqual(email.provider, "tempmailso")
+
+
+class TestHaribuClient(unittest.TestCase):
+    """Haribu.net provider test"""
+
+    def test_provider_name(self):
+        from providers.haribu import HaribuClient
+        client = HaribuClient()
+        self.assertEqual(client.provider_name, "haribu")
+
+    def test_generate_email(self):
+        from providers.haribu import HaribuClient
+        client = HaribuClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = '<html><body><input id="eposta_adres" value="test@yevme.com"></body></html>'
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        email = client.generate_email()
+        self.assertEqual(email.address, "test@yevme.com")
+        self.assertEqual(email.provider, "haribu")
+
+
+class TestIncognitomailClient(unittest.TestCase):
+    """Incognitomail.co provider test"""
+
+    def test_provider_name(self):
+        from providers.incognitomail import IncognitomailClient
+        client = IncognitomailClient()
+        self.assertEqual(client.provider_name, "incognitomail")
+
+    def test_generate_email(self):
+        from providers.incognitomail import IncognitomailClient
+        client = IncognitomailClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {"id": "test@mailfast.pro", "token": "test-token"}
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        email = client.generate_email()
+        self.assertEqual(email.address, "test@mailfast.pro")
+        self.assertEqual(email.provider, "incognitomail")

@@ -72,6 +72,8 @@ from providers.eyepaste import EyepasteClient
 from providers.segamail import SegamailClient
 from providers.tempmails_net import TempmailsNetClient
 from providers.tempmailso import TempmailsoClient
+from providers.haribu import HaribuClient
+from providers.incognitomail import IncognitomailClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -135,6 +137,8 @@ PROVIDERS = {
     "segamail": SegamailClient,
     "tempmails.net": TempmailsNetClient,
     "tempmailso": TempmailsoClient,
+    "haribu": HaribuClient,
+    "incognitomail": IncognitomailClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

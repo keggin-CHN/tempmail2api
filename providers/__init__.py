@@ -63,6 +63,8 @@ __all__ = [
     "MailgolemClient", "MuellmailClient", "MailsacClient", "TempmailGuruClient",
     "CrazymailingClient", "EyepasteClient", "SegamailClient", "TempmailsNetClient",
     "TempmailsoClient",
+    "HaribuClient",
+    "IncognitomailClient",
     "TempEmail", "InboxEmail", "ETagCache",
     "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]

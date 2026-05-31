@@ -70,6 +70,8 @@ from providers.eyepaste import EyepasteClient
 from providers.segamail import SegamailClient
 from providers.tempmails_net import TempmailsNetClient
 from providers.tempmailso import TempmailsoClient
+from providers.haribu import HaribuClient
+from providers.incognitomail import IncognitomailClient
 
 POLL_INTERVAL = 5
 POLL_TIMEOUT = 120
@@ -159,6 +161,8 @@ def main() -> None:
         "segamail": SegamailClient,
         "tempmails.net": TempmailsNetClient,
         "tempmailso": TempmailsoClient,
+        "haribu": HaribuClient,
+        "incognitomail": IncognitomailClient,
     }
 
     # 命令行参数选择 provider
