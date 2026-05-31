@@ -22,6 +22,18 @@ class TempEmail:
     duration_minutes: Optional[int] = None
     raw: Dict[str, Any] = field(default_factory=dict)
 
+    def __str__(self) -> str:
+        return f"{self.address} ({self.provider})"
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "address": self.address,
+            "provider": self.provider,
+            "expires_at": self.expires_at,
+            "created_at": self.created_at,
+            "duration_minutes": self.duration_minutes,
+        }
+
 
 @dataclass
 class InboxEmail:
@@ -35,6 +47,22 @@ class InboxEmail:
     body_text: Optional[str] = None
     received_at: Optional[str] = None
     raw: Dict[str, Any] = field(default_factory=dict)
+
+    def __str__(self) -> str:
+        sender = self.from_name or self.from_email or "未知"
+        return f"[{self.provider}] {self.subject or '(无主题)'} - {sender}"
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "provider": self.provider,
+            "subject": self.subject,
+            "from_email": self.from_email,
+            "from_name": self.from_name,
+            "body_html": self.body_html,
+            "body_text": self.body_text,
+            "received_at": self.received_at,
+        }
 
 
 class TempMailClient(ABC):

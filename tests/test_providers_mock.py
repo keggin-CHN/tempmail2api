@@ -122,6 +122,30 @@ class TestBaseModelsAdvanced(unittest.TestCase):
         self.assertEqual(email.from_name, "Sender")
         self.assertIn("<b>", email.body_html)
 
+    def test_temp_email_str(self):
+        email = TempEmail(address="test@example.com", provider="test")
+        self.assertEqual(str(email), "test@example.com (test)")
+
+    def test_inbox_email_str(self):
+        email = InboxEmail(id="1", provider="test", subject="Hello", from_name="Alice")
+        self.assertEqual(str(email), "[test] Hello - Alice")
+
+    def test_inbox_email_str_no_subject(self):
+        email = InboxEmail(id="1", provider="test", from_email="bob@test.com")
+        self.assertEqual(str(email), "[test] (无主题) - bob@test.com")
+
+    def test_temp_email_to_dict(self):
+        email = TempEmail(address="a@b.com", provider="test", duration_minutes=10)
+        d = email.to_dict()
+        self.assertEqual(d["address"], "a@b.com")
+        self.assertEqual(d["duration_minutes"], 10)
+
+    def test_inbox_email_to_dict(self):
+        email = InboxEmail(id="1", provider="test", subject="Hi")
+        d = email.to_dict()
+        self.assertEqual(d["id"], "1")
+        self.assertEqual(d["subject"], "Hi")
+
 
 class TestChatGPTMailClientMock(unittest.TestCase):
     """ChatGPTMail 客户端模拟测试"""
