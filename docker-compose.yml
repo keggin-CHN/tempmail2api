@@ -1,8 +1,12 @@
-version: "3.8"
 services:
-  tempmail-api:
+  chatgptmail-2api:
     build: .
     ports:
       - "8787:8787"
     restart: unless-stopped
-    command: ["python", "server.py", "--host", "0.0.0.0", "--port", "8787"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8787/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
