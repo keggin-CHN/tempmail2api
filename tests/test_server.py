@@ -94,6 +94,39 @@ class TestAPIServer(unittest.TestCase):
         status, body = self._get("/api/nonexistent")
         self.assertEqual(status, 404)
 
+    def test_health_endpoint(self):
+        status, body = self._get("/api/health")
+        self.assertEqual(status, 200)
+        self.assertEqual(body["status"], "ok")
+        self.assertIn("uptime_seconds", body)
+        self.assertIn("providers", body)
+        self.assertIsInstance(body["providers"], list)
+        self.assertGreater(len(body["providers"]), 0)
+
+    def test_openapi_docs_endpoint(self):
+        status, body = self._get("/api/docs")
+        self.assertEqual(status, 200)
+        self.assertEqual(body["openapi"], "3.0.3")
+        self.assertIn("info", body)
+        self.assertIn("paths", body)
+        self.assertIn("/api/health", body["paths"])
+        self.assertIn("/api/generate", body["paths"])
+        self.assertIn("/api/inbox", body["paths"])
+
+    def test_providers_include_guerrillamail(self):
+        status, body = self._get("/api/providers")
+        self.assertEqual(status, 200)
+        self.assertIn("guerrillamail", body["providers"])
+
+    def test_cors_preflight(self):
+        import http.client
+        conn = http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)
+        conn.request("OPTIONS", "/api/generate")
+        resp = conn.getresponse()
+        self.assertEqual(resp.status, 204)
+        self.assertIn("*", resp.getheader("Access-Control-Allow-Origin"))
+        conn.close()
+
 
 if __name__ == "__main__":
     unittest.main()

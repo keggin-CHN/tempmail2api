@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 多平台临时邮箱端到端测试脚本
-支持 chatgptmail / tempmail.ing / boomlify 三个平台
+支持 chatgptmail / tempmail.ing / boomlify / guerrillamail 四个平台
 
 环境要求：Python 3.8+
 pip install curl_cffi requests
@@ -11,6 +11,7 @@ pip install curl_cffi requests
     python examples/demo_all.py tempmail     # 仅测试 tempmail.ing
     python examples/demo_all.py boomlify     # 仅测试 boomlify
     python examples/demo_all.py chatgptmail  # 仅测试 chatgptmail
+    python examples/demo_all.py guerrillamail # 仅测试 guerrillamail
 """
 
 import json
@@ -24,6 +25,7 @@ sys.path.insert(0, ".")
 from providers.base import InboxEmail, TempEmail, TempMailClient
 from providers.boomlify import BoomlifyClient
 from providers.chatgptmail import ChatGPTMailClient
+from providers.guerrillamail import GuerrillaMailClient
 from providers.tempmail_ing import TempMailIngClient
 
 POLL_INTERVAL = 5
@@ -70,6 +72,7 @@ def main() -> None:
         "tempmail": TempMailIngClient,
         "boomlify": BoomlifyClient,
         "chatgptmail": ChatGPTMailClient,
+        "guerrillamail": GuerrillaMailClient,
     }
 
     # 命令行参数选择 provider
