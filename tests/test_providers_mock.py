@@ -1816,3 +1816,24 @@ class TestDisposablemailComClient(unittest.TestCase):
         self.assertTrue(callable(c.generate_email))
         self.assertTrue(callable(c.list_emails))
         self.assertTrue(callable(c.get_email_detail))
+
+
+class TestTemporarymailClient(unittest.TestCase):
+    """Test TemporarymailClient"""
+
+    def test_inheritance(self):
+        from providers.temporarymail import TemporarymailClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(TemporarymailClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.temporarymail import TemporarymailClient
+        c = TemporarymailClient()
+        self.assertEqual(c.provider_name, 'temporarymail.com')
+
+    def test_has_methods(self):
+        from providers.temporarymail import TemporarymailClient
+        c = TemporarymailClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
