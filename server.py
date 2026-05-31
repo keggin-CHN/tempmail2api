@@ -32,6 +32,8 @@ from providers.guerrillamail import GuerrillaMailClient
 from providers.mail_tm import MailTmClient
 from providers.mohmal import MohmalClient
 from providers.tempmail_ing import TempMailIngClient
+from providers.tempmail_org import TempMailOrgClient
+from providers.yopmail import YopmailClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -46,6 +48,9 @@ PROVIDERS = {
     "mail.tm": MailTmClient,
     "emailnator": EmailnatorClient,
     "mohmal": MohmalClient,
+    "tempmailorg": TempMailOrgClient,
+    "temp-mail.org": TempMailOrgClient,
+    "yopmail": YopmailClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

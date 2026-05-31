@@ -11,6 +11,8 @@ from .guerrillamail import GuerrillaMailClient
 from .mail_tm import MailTmClient
 from .emailnator import EmailnatorClient
 from .mohmal import MohmalClient
+from .tempmail_org import TempMailOrgClient
+from .yopmail import YopmailClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -23,6 +25,8 @@ __all__ = [
     "MailTmClient",
     "EmailnatorClient",
     "MohmalClient",
+    "TempMailOrgClient",
+    "YopmailClient",
     # 数据模型
     "TempEmail",
     "InboxEmail",

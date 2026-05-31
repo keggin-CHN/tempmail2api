@@ -25,6 +25,8 @@ from providers.guerrillamail import GuerrillaMailClient
 from providers.mail_tm import MailTmClient
 from providers.mohmal import MohmalClient
 from providers.tempmail_ing import TempMailIngClient
+from providers.tempmail_org import TempMailOrgClient
+from providers.yopmail import YopmailClient
 
 
 PROVIDERS = {
@@ -38,6 +40,9 @@ PROVIDERS = {
     "mail.tm": MailTmClient,
     "emailnator": EmailnatorClient,
     "mohmal": MohmalClient,
+    "tempmailorg": TempMailOrgClient,
+    "temp-mail.org": TempMailOrgClient,
+    "yopmail": YopmailClient,
 }
 
 
@@ -56,7 +61,10 @@ def detect_provider(address: str) -> Optional[str]:
         return "emailnator"
     if "emailinbo" in domain or "mohmal" in domain:
         return "mohmal"
+    if "yopmail" in domain:
+        return "yopmail"
     # tempmail.ing 使用各种随机域名，无法从地址判断
+    # temp-mail.org 也使用随机域名
     return None
 
 

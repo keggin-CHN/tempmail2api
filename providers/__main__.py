@@ -10,6 +10,8 @@ from providers import (
     MailTmClient,
     MohmalClient,
     TempMailIngClient,
+    TempMailOrgClient,
+    YopmailClient,
 )
 
 CLIENTS = [
@@ -20,6 +22,8 @@ CLIENTS = [
     MailTmClient,
     EmailnatorClient,
     MohmalClient,
+    TempMailOrgClient,
+    YopmailClient,
 ]
 
 def main():

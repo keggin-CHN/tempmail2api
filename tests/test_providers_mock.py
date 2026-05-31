@@ -416,3 +416,112 @@ class TestEmailnatorClientMock(unittest.TestCase):
         emails = client.list_emails("test@gmail.com")
         self.assertEqual(len(emails), 1)
         self.assertEqual(emails[0].subject, "Verification Code")
+
+
+class TestTempMailOrgClientMock(unittest.TestCase):
+    """Temp-Mail.org 客户端模拟测试"""
+
+    def test_provider_name(self):
+        from providers.tempmail_org import TempMailOrgClient
+        client = TempMailOrgClient()
+        self.assertEqual(client.provider_name, "temp-mail.org")
+
+    @patch("providers.tempmail_org.requests")
+    def test_generate_email(self, mock_requests):
+        from providers.tempmail_org import TempMailOrgClient
+
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = {"mailbox": "abc123@mail.com", "token": "tok-xyz"}
+        mock_resp.raise_for_status = MagicMock()
+
+        mock_session = MagicMock()
+        mock_session.post.return_value = mock_resp
+        mock_requests.Session.return_value = mock_session
+
+        client = TempMailOrgClient()
+        email = client.generate_email()
+        self.assertEqual(email.address, "abc123@mail.com")
+        self.assertEqual(email.provider, "temp-mail.org")
+
+    @patch("providers.tempmail_org.requests")
+    def test_list_emails(self, mock_requests):
+        from providers.tempmail_org import TempMailOrgClient
+
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = {
+            "messages": [
+                {"_id": "m1", "subject": "Hello", "from": "a@b.com", "bodyPreview": "Hi there"}
+            ]
+        }
+        mock_resp.raise_for_status = MagicMock()
+
+        mock_session = MagicMock()
+        mock_session.get.return_value = mock_resp
+        mock_requests.Session.return_value = mock_session
+
+        client = TempMailOrgClient()
+        client._token = "tok-xyz"
+        emails = client.list_emails("abc@mail.com")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Hello")
+
+
+class TestYopmailClientMock(unittest.TestCase):
+    """Yopmail 客户端模拟测试"""
+
+    def test_provider_name(self):
+        from providers.yopmail import YopmailClient
+        client = YopmailClient()
+        self.assertEqual(client.provider_name, "yopmail")
+
+    @patch("providers.yopmail.requests")
+    def test_generate_email(self, mock_requests):
+        from providers.yopmail import YopmailClient
+
+        # Mock the homepage response
+        mock_home = MagicMock()
+        mock_home.text = '<html><input name="yp" id="yp" value="abc123" /><script src="/ver/9.0/webmail.js"></script></html>'
+        mock_home.raise_for_status = MagicMock()
+
+        # Mock the webmail.js response
+        mock_js = MagicMock()
+        mock_js.text = "value+'&yj=XYZ789&v='"
+        mock_js.raise_for_status = MagicMock()
+
+        mock_session = MagicMock()
+        mock_session.get.side_effect = [mock_home, mock_js]
+        mock_requests.Session.return_value = mock_session
+
+        client = YopmailClient()
+        email = client.generate_email()
+        self.assertIn("@yopmail.com", email.address)
+        self.assertEqual(email.provider, "yopmail")
+
+    @patch("providers.yopmail.requests")
+    def test_list_emails_empty(self, mock_requests):
+        from providers.yopmail import YopmailClient
+
+        mock_home = MagicMock()
+        mock_home.text = '<html><input name="yp" id="yp" value="abc123" /><script src="/ver/9.0/webmail.js"></script></html>'
+        mock_home.raise_for_status = MagicMock()
+
+        mock_js = MagicMock()
+        mock_js.text = "value+'&yj=XYZ789&v='"
+        mock_js.raise_for_status = MagicMock()
+
+        mock_inbox = MagicMock()
+        mock_inbox.text = '<html><tbody></tbody></html>'
+        mock_inbox.raise_for_status = MagicMock()
+
+        mock_session = MagicMock()
+        mock_session.get.side_effect = [mock_home, mock_js, mock_inbox]
+        mock_session.cookies = MagicMock()
+        mock_requests.Session.return_value = mock_session
+
+        client = YopmailClient()
+        client._yp = "abc"
+        client._yj = "xyz"
+        client._username = "testuser"
+        client._version = "9.0"
+        emails = client.list_emails("testuser@yopmail.com")
+        self.assertEqual(len(emails), 0)
