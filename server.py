@@ -77,6 +77,7 @@ from providers.incognitomail import IncognitomailClient
 from providers.tempmail_email import TempmailEmailClient
 from providers.internxt import InternxtClient
 from providers.lroid import LroidClient
+from providers.mail_temp import MailTempClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -145,6 +146,7 @@ PROVIDERS = {
     "tempmail.email": TempmailEmailClient,
     "internxt": InternxtClient,
     "lroid": LroidClient,
+    "mail-temp": MailTempClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

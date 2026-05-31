@@ -1530,3 +1530,17 @@ class TestLroidMock(unittest.TestCase):
         from providers.lroid import LroidClient
         client = LroidClient()
         self.assertEqual(client.provider_name, 'lroid')
+
+
+class TestMailTempMock(unittest.TestCase):
+    """Mail-temp.com uses Generatoremail pattern"""
+
+    def test_class_inheritance(self):
+        from providers.mail_temp import MailTempClient
+        from providers.generator_email import GeneratorEmailClient
+        self.assertTrue(issubclass(MailTempClient, GeneratorEmailClient))
+
+    def test_provider_name(self):
+        from providers.mail_temp import MailTempClient
+        client = MailTempClient()
+        self.assertEqual(client.provider_name, 'mail-temp')
