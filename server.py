@@ -86,6 +86,7 @@ from providers.tenminemail import TenminemailClient
 from providers.expressinboxhub import ExpressinboxhubClient
 from providers.moakt import MoaktClient
 from providers.tempail import TempailClient
+from providers.byom import ByomClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -168,6 +169,7 @@ PROVIDERS = {
     "expressinboxhub": ExpressinboxhubClient,
     "moakt": MoaktClient,
     "tempail": TempailClient,
+    "byom": ByomClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

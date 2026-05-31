@@ -1711,3 +1711,24 @@ class TestTempailClient(unittest.TestCase):
         self.assertTrue(callable(c.generate_email))
         self.assertTrue(callable(c.list_emails))
         self.assertTrue(callable(c.get_email_detail))
+
+
+class TestByomClient(unittest.TestCase):
+    """Test ByomClient"""
+
+    def test_inheritance(self):
+        from providers.byom import ByomClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(ByomClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.byom import ByomClient
+        c = ByomClient()
+        self.assertEqual(c.provider_name, 'byom.de')
+
+    def test_has_methods(self):
+        from providers.byom import ByomClient
+        c = ByomClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))

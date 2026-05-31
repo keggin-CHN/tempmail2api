@@ -79,6 +79,7 @@ from providers.tenminemail import TenminemailClient
 from providers.expressinboxhub import ExpressinboxhubClient
 from providers.moakt import MoaktClient
 from providers.tempail import TempailClient
+from providers.byom import ByomClient
 
 
 PROVIDERS = {
@@ -160,6 +161,7 @@ PROVIDERS = {
     "expressinboxhub": ExpressinboxhubClient,
     "moakt": MoaktClient,
     "tempail": TempailClient,
+    "byom": ByomClient,
 }
 
 

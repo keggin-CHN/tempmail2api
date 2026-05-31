@@ -61,6 +61,7 @@ from .tenminemail import TenminemailClient
 from .expressinboxhub import ExpressinboxhubClient
 from .moakt import MoaktClient
 from .tempail import TempailClient
+from .byom import ByomClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -92,6 +93,7 @@ __all__ = [
     "ExpressinboxhubClient",
     "MoaktClient",
     "TempailClient",
+    "ByomClient",
     "TempEmail", "InboxEmail", "ETagCache",
     "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]
