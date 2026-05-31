@@ -47,7 +47,7 @@ class MoaktClient(TempMailClient):
         soup = BeautifulSoup(resp2.text, 'html.parser')
 
         # Find email address
-        email_el = soup.find('span', {'id': 'email-address'})
+        email_el = soup.find(id='email-address')
         if email_el:
             self._address = email_el.text.strip()
         
