@@ -35,6 +35,10 @@ from providers.tempmail_ing import TempMailIngClient
 from providers.tempmail_lol import TempMailLolClient
 from providers.tempmail_org import TempMailOrgClient
 from providers.yopmail import YopmailClient
+from providers.mail_gw import MailGwClient
+from providers.harakirimail import HarakirimailClient
+from providers.tempmail_plus import TempMailPlusClient
+from providers.inboxes import InboxesClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -54,6 +58,14 @@ PROVIDERS = {
     "tempmaillol": TempMailLolClient,
     "tempmail.lol": TempMailLolClient,
     "yopmail": YopmailClient,
+    "mailgw": MailGwClient,
+    "mail.gw": MailGwClient,
+    "harakirimail": HarakirimailClient,
+    "harakiri": HarakirimailClient,
+    "tempmailplus": TempMailPlusClient,
+    "tempmail.plus": TempMailPlusClient,
+    "inboxes": InboxesClient,
+    "inboxes.com": InboxesClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

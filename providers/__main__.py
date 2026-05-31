@@ -7,11 +7,15 @@ from providers import (
     ChatGPTMailClient,
     EmailnatorClient,
     GuerrillaMailClient,
+    HarakirimailClient,
+    InboxesClient,
+    MailGwClient,
     MailTmClient,
     MohmalClient,
     TempMailIngClient,
     TempMailLolClient,
     TempMailOrgClient,
+    TempMailPlusClient,
     YopmailClient,
 )
 
@@ -26,6 +30,10 @@ CLIENTS = [
     TempMailOrgClient,
     TempMailLolClient,
     YopmailClient,
+    MailGwClient,
+    HarakirimailClient,
+    TempMailPlusClient,
+    InboxesClient,
 ]
 
 def main():

@@ -1,6 +1,6 @@
 """
 临时邮箱客户端统一接口
-支持 chatgptmail / tempmail.ing / boomlify / guerrillamail 四个平台
+支持 14 个平台
 """
 
 from .base import TempMailClient, TempEmail, InboxEmail
@@ -14,6 +14,10 @@ from .mohmal import MohmalClient
 from .tempmail_lol import TempMailLolClient
 from .tempmail_org import TempMailOrgClient
 from .yopmail import YopmailClient
+from .mail_gw import MailGwClient
+from .harakirimail import HarakirimailClient
+from .tempmail_plus import TempMailPlusClient
+from .inboxes import InboxesClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -29,6 +33,10 @@ __all__ = [
     "TempMailLolClient",
     "TempMailOrgClient",
     "YopmailClient",
+    "MailGwClient",
+    "HarakirimailClient",
+    "TempMailPlusClient",
+    "InboxesClient",
     # 数据模型
     "TempEmail",
     "InboxEmail",

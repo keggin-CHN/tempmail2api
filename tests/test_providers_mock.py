@@ -591,3 +591,113 @@ class TestTempMailLolClientMock(unittest.TestCase):
             mock_req.return_value = mock_resp
             with self.assertRaises(EmailGenerateError):
                 client.generate_email()
+
+
+class TestMailGwClient(unittest.TestCase):
+    """Mail.gw provider 测试"""
+
+    @patch("providers.mail_gw.MailGwClient._get_domains", return_value=["mail.gw"])
+    @patch("providers.mail_gw.MailGwClient._create_account", return_value={"id": "1"})
+    @patch("providers.mail_gw.MailGwClient._get_token", return_value="tok-123")
+    def test_generate_email(self, *args):
+        from providers.mail_gw import MailGwClient
+        client = MailGwClient()
+        email = client.generate_email()
+        self.assertIn("@mail.gw", email.address)
+        self.assertEqual(email.provider, "mail.gw")
+
+    def test_list_emails(self):
+        from providers.mail_gw import MailGwClient
+        client = MailGwClient()
+        client._token = "tok-123"
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {
+            "hydra:member": [
+                {"id": "1", "from": {"address": "a@b.com"}, "subject": "Hi", "createdAt": "2024-01-01", "text": "Hello"}
+            ]
+        }
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@mail.gw")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Hi")
+
+
+class TestHarakirimailClient(unittest.TestCase):
+    """Harakirimail provider 测试"""
+
+    def test_generate_email(self):
+        from providers.harakirimail import HarakirimailClient
+
+        client = HarakirimailClient()
+        email = client.generate_email()
+        self.assertIn("@harakirimail.com", email.address)
+        self.assertEqual(email.provider, "harakirimail")
+
+    def test_list_emails(self):
+        from providers.harakirimail import HarakirimailClient
+        client = HarakirimailClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {
+            "emails": [{"_id": "1", "from": "a@b.com", "subject": "Test", "received": 1700000000}]
+        }
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@harakirimail.com")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Test")
+
+
+class TestTempMailPlusClient(unittest.TestCase):
+    """TempMail.plus provider 测试"""
+
+    def test_generate_email(self):
+        from providers.tempmail_plus import TempMailPlusClient
+
+        client = TempMailPlusClient()
+        email = client.generate_email()
+        self.assertIn("@", email.address)
+        self.assertEqual(email.provider, "tempmail.plus")
+
+    def test_list_emails(self):
+        from providers.tempmail_plus import TempMailPlusClient
+        client = TempMailPlusClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {
+            "mail_list": [{"mail_id": "1", "from": "a@b.com", "subject": "Test", "time": 1700000000}]
+        }
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@mailto.plus")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Test")
+
+
+class TestInboxesClient(unittest.TestCase):
+    """Inboxes.com provider 测试"""
+
+    @patch("providers.inboxes.InboxesClient._get_domains", return_value=["inboxes.com"])
+    def test_generate_email(self, *args):
+        from providers.inboxes import InboxesClient
+
+        client = InboxesClient()
+        email = client.generate_email()
+        self.assertIn("@inboxes.com", email.address)
+        self.assertEqual(email.provider, "inboxes.com")
+
+    def test_list_emails(self):
+        from providers.inboxes import InboxesClient
+        client = InboxesClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {
+            "msgs": [{"uid": "1", "f": "a@b.com", "s": "Test", "cr": 1700000000, "ph": "Preview"}]
+        }
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@inboxes.com")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Test")

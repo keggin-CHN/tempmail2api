@@ -33,6 +33,10 @@ from providers.tempmail_ing import TempMailIngClient
 from providers.tempmail_lol import TempMailLolClient
 from providers.tempmail_org import TempMailOrgClient
 from providers.yopmail import YopmailClient
+from providers.mail_gw import MailGwClient
+from providers.harakirimail import HarakirimailClient
+from providers.tempmail_plus import TempMailPlusClient
+from providers.inboxes import InboxesClient
 
 POLL_INTERVAL = 5
 POLL_TIMEOUT = 120
@@ -85,6 +89,10 @@ def main() -> None:
         "tempmailorg": TempMailOrgClient,
         "tempmaillol": TempMailLolClient,
         "yopmail": YopmailClient,
+        "mailgw": MailGwClient,
+        "harakirimail": HarakirimailClient,
+        "tempmailplus": TempMailPlusClient,
+        "inboxes": InboxesClient,
     }
 
     # 命令行参数选择 provider

@@ -28,6 +28,10 @@ from providers.tempmail_ing import TempMailIngClient
 from providers.tempmail_lol import TempMailLolClient
 from providers.tempmail_org import TempMailOrgClient
 from providers.yopmail import YopmailClient
+from providers.mail_gw import MailGwClient
+from providers.harakirimail import HarakirimailClient
+from providers.tempmail_plus import TempMailPlusClient
+from providers.inboxes import InboxesClient
 
 
 PROVIDERS = {
@@ -46,6 +50,14 @@ PROVIDERS = {
     "tempmaillol": TempMailLolClient,
     "tempmail.lol": TempMailLolClient,
     "yopmail": YopmailClient,
+    "mailgw": MailGwClient,
+    "mail.gw": MailGwClient,
+    "harakirimail": HarakirimailClient,
+    "harakiri": HarakirimailClient,
+    "tempmailplus": TempMailPlusClient,
+    "tempmail.plus": TempMailPlusClient,
+    "inboxes": InboxesClient,
+    "inboxes.com": InboxesClient,
 }
 
 
@@ -60,14 +72,21 @@ def detect_provider(address: str) -> Optional[str]:
         return "guerrillamail"
     if domain == "mail.tm":
         return "mailtm"
+    if domain == "mail.gw":
+        return "mailgw"
     if domain == "gmail.com":
         return "emailnator"
     if "emailinbo" in domain or "mohmal" in domain:
         return "mohmal"
     if "yopmail" in domain:
         return "yopmail"
-    # tempmail.ing 使用各种随机域名，无法从地址判断
-    # temp-mail.org 也使用随机域名
+    if "harakirimail" in domain:
+        return "harakirimail"
+    if "mailto.plus" in domain or "tempmail.plus" in domain:
+        return "tempmailplus"
+    if "inboxes" in domain:
+        return "inboxes"
+    # tempmail.ing / temp-mail.org / tempmail.lol 使用各种随机域名
     return None
 
 
