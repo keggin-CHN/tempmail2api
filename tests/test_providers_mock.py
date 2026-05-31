@@ -525,3 +525,69 @@ class TestYopmailClientMock(unittest.TestCase):
         client._version = "9.0"
         emails = client.list_emails("testuser@yopmail.com")
         self.assertEqual(len(emails), 0)
+
+
+class TestTempMailLolClientMock(unittest.TestCase):
+    """TempMail.lol 客户端模拟测试"""
+
+    def test_provider_name(self):
+        from providers.tempmail_lol import TempMailLolClient
+        client = TempMailLolClient()
+        self.assertEqual(client.provider_name, "tempmail.lol")
+
+    @patch("providers.tempmail_lol.requests")
+    def test_generate_email(self, mock_requests):
+        from providers.tempmail_lol import TempMailLolClient
+
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = {"address": "abc@tmpmail.cc", "token": "tok-123"}
+        mock_resp.raise_for_status = MagicMock()
+        mock_resp.status_code = 200
+
+        mock_session = MagicMock()
+        mock_session.request.return_value = mock_resp
+        mock_requests.Session.return_value = mock_session
+
+        client = TempMailLolClient()
+        email = client.generate_email()
+        self.assertEqual(email.address, "abc@tmpmail.cc")
+        self.assertEqual(email.provider, "tempmail.lol")
+
+    @patch("providers.tempmail_lol.requests")
+    def test_list_emails(self, mock_requests):
+        from providers.tempmail_lol import TempMailLolClient
+
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = {
+            "expired": False,
+            "emails": [
+                {"from": "a@b.com", "subject": "Test", "body": "Hello", "html": "<p>Hello</p>", "date": 1700000000000}
+            ],
+        }
+        mock_resp.raise_for_status = MagicMock()
+        mock_resp.status_code = 200
+
+        mock_session = MagicMock()
+        mock_session.request.return_value = mock_resp
+        mock_requests.Session.return_value = mock_session
+
+        client = TempMailLolClient()
+        client._token = "tok-123"
+        emails = client.list_emails("abc@tmpmail.cc")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Test")
+        self.assertEqual(emails[0].from_email, "a@b.com")
+
+    def test_rate_limit_error(self):
+        from providers.tempmail_lol import TempMailLolClient
+        from providers.utils import EmailGenerateError
+
+        client = TempMailLolClient()
+        # Verify rate limit raises proper error
+        with patch.object(client.session, "request") as mock_req:
+            mock_resp = MagicMock()
+            mock_resp.status_code = 429
+            mock_resp.text = "Rate limited"
+            mock_req.return_value = mock_resp
+            with self.assertRaises(EmailGenerateError):
+                client.generate_email()

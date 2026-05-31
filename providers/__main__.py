@@ -10,6 +10,7 @@ from providers import (
     MailTmClient,
     MohmalClient,
     TempMailIngClient,
+    TempMailLolClient,
     TempMailOrgClient,
     YopmailClient,
 )
@@ -23,6 +24,7 @@ CLIENTS = [
     EmailnatorClient,
     MohmalClient,
     TempMailOrgClient,
+    TempMailLolClient,
     YopmailClient,
 ]
 

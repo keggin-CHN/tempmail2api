@@ -30,6 +30,7 @@ from providers.guerrillamail import GuerrillaMailClient
 from providers.mail_tm import MailTmClient
 from providers.mohmal import MohmalClient
 from providers.tempmail_ing import TempMailIngClient
+from providers.tempmail_lol import TempMailLolClient
 from providers.tempmail_org import TempMailOrgClient
 from providers.yopmail import YopmailClient
 
@@ -82,6 +83,7 @@ def main() -> None:
         "emailnator": EmailnatorClient,
         "mohmal": MohmalClient,
         "tempmailorg": TempMailOrgClient,
+        "tempmaillol": TempMailLolClient,
         "yopmail": YopmailClient,
     }
 
