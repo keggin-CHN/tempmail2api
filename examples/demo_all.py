@@ -49,6 +49,11 @@ from providers.etempmail import EtempmailClient
 from providers.tempm import TempmClient
 from providers.generator_email import GeneratorEmailClient
 from providers.emaildashfake import EmaildashfakeClient
+from providers.adguard import AdguardClient
+from providers.inboxkitten import InboxkittenClient
+from providers.disposablemail import DisposablemailClient
+from providers.fakemailgenerator import FakemailgeneratorClient
+from providers.trashmail import TrashmailClient
 
 POLL_INTERVAL = 5
 POLL_TIMEOUT = 120
@@ -117,6 +122,11 @@ def main() -> None:
         "tempm": TempmClient,
         "generator.email": GeneratorEmailClient,
         "email-fake": EmaildashfakeClient,
+        "adguard": AdguardClient,
+        "inboxkitten": InboxkittenClient,
+        "disposablemail": DisposablemailClient,
+        "fakemailgenerator": FakemailgeneratorClient,
+        "trashmail": TrashmailClient,
     }
 
     # 命令行参数选择 provider

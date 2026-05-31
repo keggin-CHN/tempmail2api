@@ -51,6 +51,11 @@ from providers.etempmail import EtempmailClient
 from providers.tempm import TempmClient
 from providers.generator_email import GeneratorEmailClient
 from providers.emaildashfake import EmaildashfakeClient
+from providers.adguard import AdguardClient
+from providers.inboxkitten import InboxkittenClient
+from providers.disposablemail import DisposablemailClient
+from providers.fakemailgenerator import FakemailgeneratorClient
+from providers.trashmail import TrashmailClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -92,6 +97,11 @@ PROVIDERS = {
     "generator.email": GeneratorEmailClient,
     "email-fake": EmaildashfakeClient,
     "emaildashfake": EmaildashfakeClient,
+    "adguard": AdguardClient,
+    "inboxkitten": InboxkittenClient,
+    "disposablemail": DisposablemailClient,
+    "fakemailgenerator": FakemailgeneratorClient,
+    "trashmail": TrashmailClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"
