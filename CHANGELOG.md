@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.3.0 (2026-05-31)
+
+### 新增 Provider (总计 10 个)
+- **Mail.tm** (api.mail.tm): 免费 REST API，JWT 认证，邮件删除
+- **Emailnator** (emailnator.com): Gmail dot trick 临时邮箱
+- **Mohmal** (mohmal.com): 45 分钟有效期，curl_cffi 绕过 Cloudflare
+- **Yopmail** (yopmail.com): 老牌临时邮箱，BeautifulSoup HTML 解析
+- **Temp-Mail.org** (web2.temp-mail.org): 逆向自网站 REST API
+- **TempMail.lol** (api.tempmail.lol/v2): 免费 REST API，无需 Key
+
+### 改进
+- 新增 beautifulsoup4 依赖
+- 总测试数: 69 个全部通过
+- README / CHANGELOG 全面更新
+
 ## v2.2.0 (2026-05-31)
 
 ### Features
