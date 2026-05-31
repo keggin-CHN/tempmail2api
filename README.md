@@ -1,15 +1,16 @@
 # ChatGPTMail-2API
 
-📧 临时邮箱聚合 API — 支持 41 个临时邮箱服务商，提供统一的 OpenAI 兼容 API。
+📧 临时邮箱聚合 API — 支持 49 个临时邮箱服务商，提供统一的 OpenAI 兼容 API。
 
 ## 特性
 
-- **41 个 Provider** — 覆盖主流临时邮箱服务
+- **49 个 Provider** — 覆盖主流临时邮箱服务
 - **统一 API** — OpenAI 兼容格式
 - **浏览器模拟** — curl_cffi 绕过 Cloudflare
 - **速率限制** — 60 req/min per IP
 - **Docker 就绪** — 多阶段构建，非 root 运行
-- **完整测试** — 130+ 测试用例
+- **完整测试** — 146 测试用例
+- **✅ 实测验证** — 多个 provider 通过 WayinVideo 验证码收信测试
 
 ## Provider 列表
 
@@ -56,6 +57,23 @@
 | 39 | Mailgolem | mailgolem.com | CSRF + REST API |
 | 40 | Muellmail | muellmail.com | GraphQL API |
 | 41 | Mailsac | mailsac.com | HTML 解析 + JSON |
+| 42 | Tempmail.guru | tempmail.guru | REST API |
+| 43 | Crazymailing | crazymailing.com | HTML 解析 |
+| 44 | Eyepaste | eyepaste.com | REST API |
+| 45 | Segamail | segamail.com | REST API |
+| 46 | Tempmails.net | tempmails.net | CSRF + REST API |
+| 47 | Tempmailso | tempmailso.com | Fake_trash_mail |
+| 48 | Haribu | haribu.net | Tempail 模式 |
+| 49 | Incognitomail | incognitomail.co | HMAC REST API |
+
+### ✅ 实测验证（WayinVideo 验证码收信测试）
+
+| Provider | 状态 | 备注 |
+|----------|------|------|
+| InboxKitten | ✅ 稳定 | 多次测试均成功 |
+| Mailnesia | ✅ 稳定 | 多次测试均成功 |
+| Anonymmail | ✅ 稳定 | 自动检测 HTML/纯文本 |
+| TempMail.lol | ✅ 稳定 | list_emails 含完整内容 |
 
 ## 快速开始
 
