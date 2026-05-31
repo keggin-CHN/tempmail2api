@@ -65,6 +65,18 @@
 | 47 | Tempmailso | tempmailso.com | Fake_trash_mail |
 | 48 | Haribu | haribu.net | Tempail 模式 |
 | 49 | Incognitomail | incognitomail.co | HMAC REST API |
+| 50 | Tempmail.email | tempmail.email | Mail.tm API |
+| 51 | Internxt | internxt.com | Mail.tm API |
+| 52 | Lroid | lroid.com | Tempail 模式 |
+| 53 | Mail-temp.com | mail-temp.com | Generatoremail 模式 |
+| 54 | MailCatch | mailcatch.com | REST API |
+| 55 | SharkLasers | sharklasers.com | GuerrillaMail 别名 |
+| 56 | Grr.la | grr.la | GuerrillaMail 别名 |
+| 57 | Guerrillamail.info | guerrillamail.info | GuerrillaMail 别名 |
+| 58 | Guerrillamail.biz | guerrillamail.biz | GuerrillaMail 别名 |
+| 59 | Guerrillamail.net | guerrillamail.net | GuerrillaMail 别名 |
+| 60 | Guerrillamail.org | guerrillamail.org | GuerrillaMail 别名 |
+| 61 | Guerrillamailblock | guerrillamailblock.com | GuerrillaMail 别名 |
 
 ### ✅ 实测验证（WayinVideo 验证码收信测试）
 
