@@ -80,6 +80,8 @@ class APIHandler(BaseHTTPRequestHandler):
 
         if path == "/api/health":
             self._handle_health()
+        elif path == "/api/docs":
+            self._handle_openapi()
         elif path == "/api/providers":
             self._handle_providers()
         elif path == "/api/inbox":
@@ -92,6 +94,7 @@ class APIHandler(BaseHTTPRequestHandler):
                 "version": "2.1.0",
                 "endpoints": [
                     "GET /api/health",
+                    "GET /api/docs (OpenAPI)",
                     "POST /api/generate",
                     "GET /api/inbox?address=xxx",
                     "GET /api/domains?provider=boomlify",
@@ -115,6 +118,71 @@ class APIHandler(BaseHTTPRequestHandler):
             "uptime_seconds": round(uptime, 1),
             "providers": list(PROVIDERS.keys()),
         })
+
+    def _handle_openapi(self):
+        spec = {
+            "openapi": "3.0.3",
+            "info": {
+                "title": "chatgptmail-2api",
+                "version": "2.1.0",
+                "description": "多平台临时邮箱 HTTP API 服务",
+            },
+            "paths": {
+                "/api/health": {
+                    "get": {
+                        "summary": "健康检查",
+                        "responses": {"200": {"description": "服务状态"}}
+                    }
+                },
+                "/api/generate": {
+                    "post": {
+                        "summary": "生成临时邮箱",
+                        "requestBody": {
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "provider": {"type": "string", "enum": list(PROVIDERS.keys()), "default": DEFAULT_PROVIDER},
+                                            "duration": {"type": "integer", "default": 10},
+                                            "domain": {"type": "string"},
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "responses": {"200": {"description": "生成的邮箱信息"}}
+                    }
+                },
+                "/api/inbox": {
+                    "get": {
+                        "summary": "查看收件箱",
+                        "parameters": [
+                            {"name": "address", "in": "query", "required": True, "schema": {"type": "string"}},
+                            {"name": "provider", "in": "query", "schema": {"type": "string"}},
+                            {"name": "id", "in": "query", "schema": {"type": "string"}},
+                        ],
+                        "responses": {"200": {"description": "邮件列表或详情"}}
+                    }
+                },
+                "/api/domains": {
+                    "get": {
+                        "summary": "查看可用域名",
+                        "parameters": [
+                            {"name": "provider", "in": "query", "schema": {"type": "string"}},
+                        ],
+                        "responses": {"200": {"description": "域名列表"}}
+                    }
+                },
+                "/api/providers": {
+                    "get": {
+                        "summary": "列出支持的 provider",
+                        "responses": {"200": {"description": "provider 列表"}}
+                    }
+                },
+            }
+        }
+        json_response(self, 200, spec)
 
     def _handle_providers(self):
         json_response(self, 200, {

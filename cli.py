@@ -6,6 +6,7 @@
     python -m cli generate tempmail            # 用 tempmail.ing 生成邮箱
     python -m cli generate boomlify            # 用 boomlify 生成邮箱
     python -m cli generate chatgptmail         # 用 chatgptmail 生成邮箱
+    python -m cli generate guerrillamail       # 用 guerrillamail 生成邮箱
     python -m cli inbox <email_address>        # 查看收件箱（自动识别 provider）
     python -m cli wait <email_address>         # 等待新邮件到达
     python -m cli domains boomlify             # 查看 boomlify 可用域名
@@ -19,6 +20,7 @@ from typing import Optional
 from providers.base import TempMailClient
 from providers.boomlify import BoomlifyClient
 from providers.chatgptmail import ChatGPTMailClient
+from providers.guerrillamail import GuerrillaMailClient
 from providers.tempmail_ing import TempMailIngClient
 
 
@@ -27,6 +29,8 @@ PROVIDERS = {
     "tempmailing": TempMailIngClient,
     "boomlify": BoomlifyClient,
     "chatgptmail": ChatGPTMailClient,
+    "guerrillamail": GuerrillaMailClient,
+    "guerrilla": GuerrillaMailClient,
 }
 
 
@@ -37,6 +41,8 @@ def detect_provider(address: str) -> Optional[str]:
         return "chatgptmail"
     if "okcx.edu" in domain or "priyo.edu" in domain or "boomlify" in domain:
         return "boomlify"
+    if "guerrillamail" in domain or "guerrillamailblock" in domain or "grr.la" in domain:
+        return "guerrillamail"
     # tempmail.ing 使用各种随机域名，无法从地址判断
     return None
 
