@@ -177,7 +177,7 @@ class APIHandler(BaseHTTPRequestHandler):
             "openapi": "3.0.3",
             "info": {
                 "title": "chatgptmail-2api",
-                "version": "2.1.0",
+                "version": "2.3.0",
                 "description": "多平台临时邮箱 HTTP API 服务",
             },
             "paths": {
