@@ -38,6 +38,12 @@ from providers.moakt import MoaktClient
 from providers.fakemail_net import FakemailNetClient
 from providers.emailfake import EmailfakeClient
 from providers.tempomail import TempomailClient
+from providers.anonymmail import AnonymmailClient
+from providers.emailondeck import EmailondeckClient
+from providers.etempmail import EtempmailClient
+from providers.tempm import TempmClient
+from providers.generator_email import GeneratorEmailClient
+from providers.emaildashfake import EmaildashfakeClient
 
 
 PROVIDERS = {
@@ -71,6 +77,13 @@ PROVIDERS = {
     "fakemail.net": FakemailNetClient,
     "emailfake": EmailfakeClient,
     "tempomail": TempomailClient,
+    "anonymmail": AnonymmailClient,
+    "emailondeck": EmailondeckClient,
+    "etempmail": EtempmailClient,
+    "tempm": TempmClient,
+    "generator.email": GeneratorEmailClient,
+    "email-fake": EmaildashfakeClient,
+    "emaildashfake": EmaildashfakeClient,
 }
 
 

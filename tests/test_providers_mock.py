@@ -875,3 +875,93 @@ class TestTempomailClient(unittest.TestCase):
         emails = client.list_emails("test@tempomail.top")
         self.assertEqual(len(emails), 1)
         self.assertEqual(emails[0].subject, "Test")
+
+
+class TestAnonymmailClient(unittest.TestCase):
+    """Anonymmail.net provider test"""
+
+    def test_provider_name(self):
+        from providers.anonymmail import AnonymmailClient
+        client = AnonymmailClient()
+        self.assertEqual(client.provider_name, "anonymmail")
+
+    @patch("providers.anonymmail.AnonymmailClient._get_domains", return_value=["anonymmail.net"])
+    def test_generate_email(self, *args):
+        from providers.anonymmail import AnonymmailClient
+        client = AnonymmailClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {"success": True}
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        email = client.generate_email()
+        self.assertIn("@anonymmail.net", email.address)
+        self.assertEqual(email.provider, "anonymmail")
+
+
+class TestEmailondeckClient(unittest.TestCase):
+    """Emailondeck.com provider test"""
+
+    def test_generate_email(self):
+        from providers.emailondeck import EmailondeckClient
+        client = EmailondeckClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = "test@emailondeck.com|token123"
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        email = client.generate_email()
+        self.assertEqual(email.address, "test@emailondeck.com")
+        self.assertEqual(email.provider, "emailondeck")
+
+
+class TestEtempmailClient(unittest.TestCase):
+    """Etempmail.com provider test"""
+
+    def test_generate_email(self):
+        from providers.etempmail import EtempmailClient
+        client = EtempmailClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {"address": "test@etempmail.com"}
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        email = client.generate_email()
+        self.assertEqual(email.address, "test@etempmail.com")
+        self.assertEqual(email.provider, "etempmail")
+
+
+class TestTempmClient(unittest.TestCase):
+    """Tempm.com provider test"""
+
+    @patch("providers.tempm.TempmClient._get_domains", return_value=["royal.net"])
+    def test_generate_email(self, *args):
+        from providers.tempm import TempmClient
+        client = TempmClient()
+        email = client.generate_email()
+        self.assertIn("@royal.net", email.address)
+        self.assertEqual(email.provider, "tempm")
+
+
+class TestGeneratorEmailClient(unittest.TestCase):
+    """Generator.email provider test"""
+
+    @patch("providers.generator_email.GeneratorEmailClient._get_domains", return_value=["tmpeml.com"])
+    def test_generate_email(self, *args):
+        from providers.generator_email import GeneratorEmailClient
+        client = GeneratorEmailClient()
+        email = client.generate_email()
+        self.assertIn("@tmpeml.com", email.address)
+        self.assertEqual(email.provider, "generator.email")
+
+
+class TestEmaildashfakeClient(unittest.TestCase):
+    """Email-fake.com provider test"""
+
+    @patch("providers.emaildashfake.EmaildashfakeClient._get_domains", return_value=["tmpeml.com"])
+    def test_generate_email(self, *args):
+        from providers.emaildashfake import EmaildashfakeClient
+        client = EmaildashfakeClient()
+        email = client.generate_email()
+        self.assertIn("@tmpeml.com", email.address)
+        self.assertEqual(email.provider, "email-fake")
