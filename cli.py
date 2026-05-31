@@ -16,6 +16,8 @@ from providers.inboxkitten import InboxkittenClient as InboxKittenClient
 from providers.mailnesia import MailnesiaClient
 from providers.anonymmail import AnonymmailClient
 from providers.tempmail_lol import TempMailLolClient
+from providers.chatgptmail import ChatGPTMailClient
+from providers.tempmail_ing import TempMailIngClient
 
 from typing import Optional
 
@@ -25,6 +27,9 @@ PROVIDERS = {
     "anonymmail": AnonymmailClient,
     "tempmaillol": TempMailLolClient,
     "tempmail.lol": TempMailLolClient,
+    "chatgptmail": ChatGPTMailClient,
+    "tempmail": TempMailIngClient,
+    "tempmailing": TempMailIngClient,
 }
 
 

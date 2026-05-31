@@ -28,6 +28,8 @@ from providers.inboxkitten import InboxkittenClient as InboxKittenClient
 from providers.mailnesia import MailnesiaClient
 from providers.anonymmail import AnonymmailClient
 from providers.tempmail_lol import TempMailLolClient
+from providers.chatgptmail import ChatGPTMailClient
+from providers.tempmail_ing import TempMailIngClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -38,6 +40,9 @@ PROVIDERS = {
     "anonymmail": AnonymmailClient,
     "tempmaillol": TempMailLolClient,
     "tempmail.lol": TempMailLolClient,
+    "chatgptmail": ChatGPTMailClient,
+    "tempmail": TempMailIngClient,
+    "tempmailing": TempMailIngClient,
 }
 
 DEFAULT_PROVIDER = "inboxkitten"

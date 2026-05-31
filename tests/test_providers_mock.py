@@ -92,3 +92,45 @@ class TestTempMailLolClient(unittest.TestCase):
         self.assertTrue(callable(c.generate_email))
         self.assertTrue(callable(c.list_emails))
         self.assertTrue(callable(c.get_email_detail))
+
+
+class TestChatGPTMailClient(unittest.TestCase):
+    """ChatGPTMail provider test"""
+
+    def test_inheritance(self):
+        from providers.chatgptmail import ChatGPTMailClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(ChatGPTMailClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.chatgptmail import ChatGPTMailClient
+        c = ChatGPTMailClient()
+        self.assertEqual(c.provider_name, 'chatgptmail')
+
+    def test_has_methods(self):
+        from providers.chatgptmail import ChatGPTMailClient
+        c = ChatGPTMailClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
+
+
+class TestTempMailIngClient(unittest.TestCase):
+    """TempMail.ing provider test"""
+
+    def test_inheritance(self):
+        from providers.tempmail_ing import TempMailIngClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(TempMailIngClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.tempmail_ing import TempMailIngClient
+        c = TempMailIngClient()
+        self.assertEqual(c.provider_name, 'tempmail.ing')
+
+    def test_has_methods(self):
+        from providers.tempmail_ing import TempMailIngClient
+        c = TempMailIngClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))

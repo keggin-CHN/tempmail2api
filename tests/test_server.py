@@ -62,6 +62,8 @@ class TestAPIServer(unittest.TestCase):
         self.assertIn("mailnesia", body["providers"])
         self.assertIn("anonymmail", body["providers"])
         self.assertIn("tempmaillol", body["providers"])
+        self.assertIn("chatgptmail", body["providers"])
+        self.assertIn("tempmail", body["providers"])
         self.assertIn("verified", body)
 
     def test_generate_unknown_provider(self):
@@ -85,7 +87,7 @@ class TestAPIServer(unittest.TestCase):
         self.assertIn("uptime_seconds", body)
         self.assertIn("providers", body)
         self.assertIsInstance(body["providers"], list)
-        self.assertEqual(len(body["providers"]), 5)  # 4 个 provider + tempmail.lol 别名
+        self.assertEqual(len(body["providers"]), 8)  # 6 个 provider + 别名
 
     def test_openapi_docs_endpoint(self):
         status, body = self._get("/api/docs")

@@ -1,11 +1,13 @@
 # chatgptmail-2api
 
-📧 临时邮箱聚合 API — 4 个经实测验证的 provider，提供统一的 OpenAI 兼容 API。
+📧 临时邮箱聚合 API — 6 个经实测验证的 provider，提供统一的 OpenAI 兼容 API。
 
 ## ✅ 经实测验证的 Provider
 
 | Provider | 网站 | 类型 | 验证状态 |
 |----------|------|------|----------|
+| **ChatGPTMail** | mail.chatgpt.org.uk | REST API | 项目基础 provider |
+| **TempMail.ing** | tempmail.ing | REST API | 项目基础 provider |
 | **InboxKitten** | inboxkitten.com | REST API | ✅ 多次收信成功 |
 | **Mailnesia** | mailnesia.com | HTML 解析 | ✅ 多次收信成功 |
 | **Anonymmail** | anonymmail.net | HTML 解析 | ✅ 收信成功 |
