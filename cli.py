@@ -75,6 +75,7 @@ from providers.mailcatch import MailcatchClient
 from providers.sharklasers import SharklasersClient
 from providers.guerrillamail_aliases import GrrLaClient, GuerrillamailInfoClient, GuerrillamailBizClient, GuerrillamailNetClient, GuerrillamailOrgClient, GuerrillamailblockClient
 from providers.tempdashmail_org import TempdashmailOrgClient
+from providers.tenminemail import TenminemailClient
 
 
 PROVIDERS = {
@@ -152,6 +153,7 @@ PROVIDERS = {
     "guerrillamail.org": GuerrillamailOrgClient,
     "guerrillamailblock": GuerrillamailblockClient,
     "tempdashmail.org": TempdashmailOrgClient,
+    "10minemail": TenminemailClient,
 }
 
 

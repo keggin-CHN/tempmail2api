@@ -1629,3 +1629,24 @@ class TestTempdashmailOrgMock(unittest.TestCase):
         self.assertTrue(callable(c.generate_email))
         self.assertTrue(callable(c.list_emails))
         self.assertTrue(callable(c.get_email_detail))
+
+
+class TestTenminemailMock(unittest.TestCase):
+    """Test TenminemailClient using web2.10minemail.com API"""
+
+    def test_inheritance(self):
+        from providers.tenminemail import TenminemailClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(TenminemailClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.tenminemail import TenminemailClient
+        c = TenminemailClient()
+        self.assertEqual(c.provider_name, '10minemail')
+
+    def test_has_methods(self):
+        from providers.tenminemail import TenminemailClient
+        c = TenminemailClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
