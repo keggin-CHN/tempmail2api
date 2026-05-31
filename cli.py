@@ -80,6 +80,7 @@ from providers.expressinboxhub import ExpressinboxhubClient
 from providers.moakt import MoaktClient
 from providers.tempail import TempailClient
 from providers.byom import ByomClient
+from providers.tempmail_net import TempmailNetClient
 
 
 PROVIDERS = {
@@ -162,6 +163,8 @@ PROVIDERS = {
     "moakt": MoaktClient,
     "tempail": TempailClient,
     "byom": ByomClient,
+    "tempmail.net": TempmailNetClient,
+    "tempmailnet": TempmailNetClient,
 }
 
 

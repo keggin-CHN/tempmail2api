@@ -1732,3 +1732,24 @@ class TestByomClient(unittest.TestCase):
         self.assertTrue(callable(c.generate_email))
         self.assertTrue(callable(c.list_emails))
         self.assertTrue(callable(c.get_email_detail))
+
+
+class TestTempmailNetClient(unittest.TestCase):
+    """Test TempmailNetClient"""
+
+    def test_inheritance(self):
+        from providers.tempmail_net import TempmailNetClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(TempmailNetClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.tempmail_net import TempmailNetClient
+        c = TempmailNetClient()
+        self.assertEqual(c.provider_name, 'tempmail.net')
+
+    def test_has_methods(self):
+        from providers.tempmail_net import TempmailNetClient
+        c = TempmailNetClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
