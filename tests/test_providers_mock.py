@@ -1395,3 +1395,55 @@ class TestEyepasteClient(unittest.TestCase):
         client._session.get.return_value = mock_resp
         emails = client.list_emails("test@eyepaste.com")
         self.assertEqual(len(emails), 0)
+
+
+class TestSegamailClient(unittest.TestCase):
+    """Segamail.com provider test"""
+
+    def test_provider_name(self):
+        from providers.segamail import SegamailClient
+        client = SegamailClient()
+        self.assertEqual(client.provider_name, "segamail")
+
+    def test_generate_email(self):
+        from providers.segamail import SegamailClient
+        client = SegamailClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {"address": "test@segamail.com", "recover_key": "key123"}
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        email = client.generate_email()
+        self.assertEqual(email.address, "test@segamail.com")
+        self.assertEqual(email.provider, "segamail")
+
+
+class TestTempmailsNetClient(unittest.TestCase):
+    """Tempmails.net provider test"""
+
+    def test_provider_name(self):
+        from providers.tempmails_net import TempmailsNetClient
+        client = TempmailsNetClient()
+        self.assertEqual(client.provider_name, "tempmails.net")
+
+
+class TestTempmailsoClient(unittest.TestCase):
+    """Tempmailso.com provider test"""
+
+    def test_provider_name(self):
+        from providers.tempmailso import TempmailsoClient
+        client = TempmailsoClient()
+        self.assertEqual(client.provider_name, "tempmailso")
+
+    @patch("providers.tempmailso.TempmailsoClient._get_domains", return_value=["tempmailso.com"])
+    def test_generate_email(self, *args):
+        from providers.tempmailso import TempmailsoClient
+        client = TempmailsoClient()
+        client._token = "test-token"
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        email = client.generate_email()
+        self.assertIn("@tempmailso.com", email.address)
+        self.assertEqual(email.provider, "tempmailso")

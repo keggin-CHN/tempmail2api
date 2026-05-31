@@ -67,6 +67,9 @@ from providers.mailsac import MailsacClient
 from providers.tempmail_guru import TempmailGuruClient
 from providers.crazymailing import CrazymailingClient
 from providers.eyepaste import EyepasteClient
+from providers.segamail import SegamailClient
+from providers.tempmails_net import TempmailsNetClient
+from providers.tempmailso import TempmailsoClient
 
 POLL_INTERVAL = 5
 POLL_TIMEOUT = 120
@@ -153,6 +156,9 @@ def main() -> None:
         "tempmail.guru": TempmailGuruClient,
         "crazymailing": CrazymailingClient,
         "eyepaste": EyepasteClient,
+        "segamail": SegamailClient,
+        "tempmails.net": TempmailsNetClient,
+        "tempmailso": TempmailsoClient,
     }
 
     # 命令行参数选择 provider

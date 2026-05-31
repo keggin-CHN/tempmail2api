@@ -1,4 +1,4 @@
-"""临时邮箱客户端统一接口 — 44 个 provider"""
+"""临时邮箱客户端统一接口 — 47 个 provider"""
 from .base import TempMailClient, TempEmail, InboxEmail
 from .chatgptmail import ChatGPTMailClient
 from .tempmail_ing import TempMailIngClient
@@ -44,6 +44,9 @@ from .mailsac import MailsacClient
 from .tempmail_guru import TempmailGuruClient
 from .crazymailing import CrazymailingClient
 from .eyepaste import EyepasteClient
+from .segamail import SegamailClient
+from .tempmails_net import TempmailsNetClient
+from .tempmailso import TempmailsoClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
@@ -58,7 +61,8 @@ __all__ = [
     "TrashmailClient", "OnesecmailClient", "MaildaxClient", "FakermailClient",
     "MintemailClient", "EztempmailClient", "TmailGgClient", "TempemailCoClient",
     "MailgolemClient", "MuellmailClient", "MailsacClient", "TempmailGuruClient",
-    "CrazymailingClient", "EyepasteClient",
+    "CrazymailingClient", "EyepasteClient", "SegamailClient", "TempmailsNetClient",
+    "TempmailsoClient",
     "TempEmail", "InboxEmail", "ETagCache",
     "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]

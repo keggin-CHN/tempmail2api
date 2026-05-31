@@ -69,6 +69,9 @@ from providers.mailsac import MailsacClient
 from providers.tempmail_guru import TempmailGuruClient
 from providers.crazymailing import CrazymailingClient
 from providers.eyepaste import EyepasteClient
+from providers.segamail import SegamailClient
+from providers.tempmails_net import TempmailsNetClient
+from providers.tempmailso import TempmailsoClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -129,6 +132,9 @@ PROVIDERS = {
     "tempmail.guru": TempmailGuruClient,
     "crazymailing": CrazymailingClient,
     "eyepaste": EyepasteClient,
+    "segamail": SegamailClient,
+    "tempmails.net": TempmailsNetClient,
+    "tempmailso": TempmailsoClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"
