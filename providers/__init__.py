@@ -1,8 +1,4 @@
-"""
-临时邮箱客户端统一接口
-支持 14 个平台
-"""
-
+"""临时邮箱客户端统一接口 — 17 个 provider"""
 from .base import TempMailClient, TempEmail, InboxEmail
 from .chatgptmail import ChatGPTMailClient
 from .tempmail_ing import TempMailIngClient
@@ -18,33 +14,17 @@ from .mail_gw import MailGwClient
 from .harakirimail import HarakirimailClient
 from .tempmail_plus import TempMailPlusClient
 from .inboxes import InboxesClient
+from .noopmail import NoopmailClient
+from .mailnesia import MailnesiaClient
+from .moakt import MoaktClient
 from .utils import ETagCache, TempMailError, EmailGenerateError, EmailFetchError, RateLimitError
 
 __all__ = [
-    # 客户端
-    "TempMailClient",
-    "ChatGPTMailClient",
-    "TempMailIngClient",
-    "BoomlifyClient",
-    "GuerrillaMailClient",
-    "MailTmClient",
-    "EmailnatorClient",
-    "MohmalClient",
-    "TempMailLolClient",
-    "TempMailOrgClient",
-    "YopmailClient",
-    "MailGwClient",
-    "HarakirimailClient",
-    "TempMailPlusClient",
-    "InboxesClient",
-    # 数据模型
-    "TempEmail",
-    "InboxEmail",
-    # 工具
-    "ETagCache",
-    # 异常
-    "TempMailError",
-    "EmailGenerateError",
-    "EmailFetchError",
-    "RateLimitError",
+    "TempMailClient", "ChatGPTMailClient", "TempMailIngClient", "BoomlifyClient",
+    "GuerrillaMailClient", "MailTmClient", "EmailnatorClient", "MohmalClient",
+    "TempMailLolClient", "TempMailOrgClient", "YopmailClient", "MailGwClient",
+    "HarakirimailClient", "TempMailPlusClient", "InboxesClient", "NoopmailClient",
+    "MailnesiaClient", "MoaktClient",
+    "TempEmail", "InboxEmail", "ETagCache",
+    "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]

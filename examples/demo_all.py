@@ -37,6 +37,9 @@ from providers.mail_gw import MailGwClient
 from providers.harakirimail import HarakirimailClient
 from providers.tempmail_plus import TempMailPlusClient
 from providers.inboxes import InboxesClient
+from providers.noopmail import NoopmailClient
+from providers.mailnesia import MailnesiaClient
+from providers.moakt import MoaktClient
 
 POLL_INTERVAL = 5
 POLL_TIMEOUT = 120
@@ -93,6 +96,9 @@ def main() -> None:
         "harakirimail": HarakirimailClient,
         "tempmailplus": TempMailPlusClient,
         "inboxes": InboxesClient,
+        "noopmail": NoopmailClient,
+        "mailnesia": MailnesiaClient,
+        "moakt": MoaktClient,
     }
 
     # 命令行参数选择 provider

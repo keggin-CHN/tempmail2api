@@ -39,6 +39,9 @@ from providers.mail_gw import MailGwClient
 from providers.harakirimail import HarakirimailClient
 from providers.tempmail_plus import TempMailPlusClient
 from providers.inboxes import InboxesClient
+from providers.noopmail import NoopmailClient
+from providers.mailnesia import MailnesiaClient
+from providers.moakt import MoaktClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -66,6 +69,9 @@ PROVIDERS = {
     "tempmail.plus": TempMailPlusClient,
     "inboxes": InboxesClient,
     "inboxes.com": InboxesClient,
+    "noopmail": NoopmailClient,
+    "mailnesia": MailnesiaClient,
+    "moakt": MoaktClient,
 }
 
 DEFAULT_PROVIDER = "tempmail"

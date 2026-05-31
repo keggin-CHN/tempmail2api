@@ -32,6 +32,9 @@ from providers.mail_gw import MailGwClient
 from providers.harakirimail import HarakirimailClient
 from providers.tempmail_plus import TempMailPlusClient
 from providers.inboxes import InboxesClient
+from providers.noopmail import NoopmailClient
+from providers.mailnesia import MailnesiaClient
+from providers.moakt import MoaktClient
 
 
 PROVIDERS = {
@@ -58,6 +61,9 @@ PROVIDERS = {
     "tempmail.plus": TempMailPlusClient,
     "inboxes": InboxesClient,
     "inboxes.com": InboxesClient,
+    "noopmail": NoopmailClient,
+    "mailnesia": MailnesiaClient,
+    "moakt": MoaktClient,
 }
 
 

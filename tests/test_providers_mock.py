@@ -701,3 +701,74 @@ class TestInboxesClient(unittest.TestCase):
         emails = client.list_emails("test@inboxes.com")
         self.assertEqual(len(emails), 1)
         self.assertEqual(emails[0].subject, "Test")
+
+
+class TestNoopmailClient(unittest.TestCase):
+    """Noopmail.org provider test"""
+
+    @patch("providers.noopmail.NoopmailClient._get_domains", return_value=["noopmail.org"])
+    def test_generate_email(self, *args):
+        from providers.noopmail import NoopmailClient
+        client = NoopmailClient()
+        email = client.generate_email()
+        self.assertIn("@noopmail.org", email.address)
+        self.assertEqual(email.provider, "noopmail")
+
+    def test_list_emails(self):
+        from providers.noopmail import NoopmailClient
+        client = NoopmailClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = [
+            {"id": "1", "from": "a@b.com", "subject": "Test", "date": 1700000000, "text": "Hi"}
+        ]
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        emails = client.list_emails("test@noopmail.org")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Test")
+
+
+class TestMailnesiaClient(unittest.TestCase):
+    """Mailnesia.com provider test"""
+
+    def test_generate_email(self):
+        from providers.mailnesia import MailnesiaClient
+        client = MailnesiaClient()
+        email = client.generate_email()
+        self.assertIn("@mailnesia.com", email.address)
+        self.assertEqual(email.provider, "mailnesia")
+
+    def test_list_emails_empty(self):
+        from providers.mailnesia import MailnesiaClient
+        client = MailnesiaClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = '<html><body><table></table></body></html>'
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@mailnesia.com")
+        self.assertEqual(len(emails), 0)
+
+
+class TestMoaktClient(unittest.TestCase):
+    """Moakt.com provider test"""
+
+    @patch("providers.moakt.MoaktClient._get_domains", return_value=["mocake.com"])
+    def test_generate_email(self, *args):
+        from providers.moakt import MoaktClient
+        client = MoaktClient()
+        email = client.generate_email()
+        self.assertIn("@mocake.com", email.address)
+        self.assertEqual(email.provider, "moakt")
+
+    def test_list_emails_empty(self):
+        from providers.moakt import MoaktClient
+        client = MoaktClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = '<html><body><div id="email_message_list"></div></body></html>'
+        client._session = MagicMock()
+        client._session.get.return_value = mock_resp
+        emails = client.list_emails("test@mocake.com")
+        self.assertIsInstance(emails, list)
