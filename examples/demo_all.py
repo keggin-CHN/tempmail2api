@@ -62,6 +62,8 @@ from providers.eztempmail import EztempmailClient
 from providers.tmail_gg import TmailGgClient
 from providers.tempemail_co import TempemailCoClient
 from providers.mailgolem import MailgolemClient
+from providers.muellmail import MuellmailClient
+from providers.mailsac import MailsacClient
 
 POLL_INTERVAL = 5
 POLL_TIMEOUT = 120
@@ -143,6 +145,8 @@ def main() -> None:
         "tmail.gg": TmailGgClient,
         "tempemail.co": TempemailCoClient,
         "mailgolem": MailgolemClient,
+        "muellmail": MuellmailClient,
+        "mailsac": MailsacClient,
     }
 
     # 命令行参数选择 provider

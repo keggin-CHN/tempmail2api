@@ -1269,3 +1269,58 @@ class TestMailgolemClient(unittest.TestCase):
         emails = client.list_emails("test@mailgolem.com")
         self.assertEqual(len(emails), 1)
         self.assertEqual(emails[0].subject, "Test")
+
+
+class TestMuellmailClient(unittest.TestCase):
+    """Muellmail.com provider test"""
+
+    def test_provider_name(self):
+        from providers.muellmail import MuellmailClient
+        client = MuellmailClient()
+        self.assertEqual(client.provider_name, "muellmail")
+
+    @patch("providers.muellmail.MuellmailClient._get_domains", return_value=["muellmail.com"])
+    def test_generate_email(self, *args):
+        from providers.muellmail import MuellmailClient
+        client = MuellmailClient()
+        client._token = "test-token"
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        client._session.get.return_value = mock_resp
+        email = client.generate_email()
+        self.assertIn("@muellmail.com", email.address)
+        self.assertEqual(email.provider, "muellmail")
+
+    def test_list_emails(self):
+        from providers.muellmail import MuellmailClient
+        client = MuellmailClient()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {
+            "data": {"emails": [
+                {"id": "1", "sender": "a@b.com", "subject": "Test", "createdAt": "2025-01-01", "html": "<p>Hi</p>", "text": "Hi"}
+            ]}
+        }
+        client._session = MagicMock()
+        client._session.post.return_value = mock_resp
+        emails = client.list_emails("test@muellmail.com")
+        self.assertEqual(len(emails), 1)
+        self.assertEqual(emails[0].subject, "Test")
+
+
+class TestMailsacClient(unittest.TestCase):
+    """Mailsac.com provider test"""
+
+    def test_provider_name(self):
+        from providers.mailsac import MailsacClient
+        client = MailsacClient()
+        self.assertEqual(client.provider_name, "mailsac")
+
+    def test_generate_email(self):
+        from providers.mailsac import MailsacClient
+        client = MailsacClient()
+        email = client.generate_email()
+        self.assertIn("@mailsac.com", email.address)
+        self.assertEqual(email.provider, "mailsac")

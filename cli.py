@@ -57,6 +57,8 @@ from providers.eztempmail import EztempmailClient
 from providers.tmail_gg import TmailGgClient
 from providers.tempemail_co import TempemailCoClient
 from providers.mailgolem import MailgolemClient
+from providers.muellmail import MuellmailClient
+from providers.mailsac import MailsacClient
 
 
 PROVIDERS = {
@@ -111,6 +113,8 @@ PROVIDERS = {
     "tmail.gg": TmailGgClient,
     "tempemail.co": TempemailCoClient,
     "mailgolem": MailgolemClient,
+    "muellmail": MuellmailClient,
+    "mailsac": MailsacClient,
 }
 
 
