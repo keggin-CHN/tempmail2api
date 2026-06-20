@@ -30,6 +30,7 @@ from providers.anonymmail import AnonymmailClient
 from providers.tempmail_lol import TempMailLolClient
 from providers.chatgptmail import ChatGPTMailClient
 from providers.tempmail_ing import TempMailIngClient
+from providers.emailtick import EmailTickClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -43,6 +44,8 @@ PROVIDERS = {
     "chatgptmail": ChatGPTMailClient,
     "tempmail": TempMailIngClient,
     "tempmailing": TempMailIngClient,
+    "emailtick": EmailTickClient,
+    "mailticking": EmailTickClient,
 }
 
 DEFAULT_PROVIDER = "inboxkitten"
@@ -127,7 +130,7 @@ class APIHandler(BaseHTTPRequestHandler):
             json_response(self, 200, {
                 "service": "chatgptmail-2api",
                 "version": "2.3.0",
-                "description": "4 个经实测验证的临时邮箱 provider",
+                "description": "多个经实测验证的临时邮箱 provider",
                 "providers": list(PROVIDERS.keys()),
                 "endpoints": [
                     "GET /api/health",
@@ -163,7 +166,7 @@ class APIHandler(BaseHTTPRequestHandler):
             "info": {
                 "title": "chatgptmail-2api",
                 "version": "2.3.0",
-                "description": "4 个经实测验证的临时邮箱 provider (InboxKitten, Mailnesia, Anonymmail, TempMail.lol)",
+                "description": "多个经实测验证的临时邮箱 provider (InboxKitten, Mailnesia, Anonymmail, TempMail.lol, ChatGPTMail, TempMail.ing, EmailTick)",
             },
             "paths": {
                 "/api/health": {
@@ -209,7 +212,7 @@ class APIHandler(BaseHTTPRequestHandler):
         json_response(self, 200, {
             "providers": list(PROVIDERS.keys()),
             "default": DEFAULT_PROVIDER,
-            "verified": ["inboxkitten", "mailnesia", "anonymmail", "tempmaillol"],
+            "verified": ["inboxkitten", "mailnesia", "anonymmail", "tempmaillol", "chatgptmail", "tempmail", "emailtick"],
         })
 
     def _handle_generate(self):
@@ -256,10 +259,11 @@ class APIHandler(BaseHTTPRequestHandler):
                 json_response(self, 200, {
                     "id": detail.id,
                     "subject": detail.subject,
-                    "from_address": detail.from_address,
+                    "from_address": detail.from_email,
+                    "from_name": detail.from_name,
                     "body_html": detail.body_html,
                     "body_text": detail.body_text,
-                    "date": detail.date,
+                    "date": detail.received_at,
                     "provider": detail.provider,
                 })
             else:
@@ -272,8 +276,9 @@ class APIHandler(BaseHTTPRequestHandler):
                         {
                             "id": e.id,
                             "subject": e.subject,
-                            "from_address": e.from_address,
-                            "date": e.date,
+                            "from_address": e.from_email,
+                            "from_name": e.from_name,
+                            "date": e.received_at,
                         }
                         for e in emails
                     ],
@@ -294,7 +299,7 @@ def main():
 
     server = HTTPServer((args.host, args.port), APIHandler)
     logger.info("🚀 API 服务启动: http://%s:%d", args.host, args.port)
-    logger.info("📋 Provider: inboxkitten, mailnesia, anonymmail, tempmaillol")
+    logger.info("📋 Provider: inboxkitten, mailnesia, anonymmail, tempmaillol, chatgptmail, tempmail, emailtick")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

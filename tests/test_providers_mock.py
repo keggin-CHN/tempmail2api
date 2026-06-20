@@ -134,3 +134,42 @@ class TestTempMailIngClient(unittest.TestCase):
         self.assertTrue(callable(c.generate_email))
         self.assertTrue(callable(c.list_emails))
         self.assertTrue(callable(c.get_email_detail))
+
+
+class TestEmailTickClient(unittest.TestCase):
+    """EmailTick provider test"""
+
+    def test_inheritance(self):
+        from providers.emailtick import EmailTickClient
+        from providers.base import TempMailClient
+        self.assertTrue(issubclass(EmailTickClient, TempMailClient))
+
+    def test_provider_name(self):
+        from providers.emailtick import EmailTickClient
+        c = EmailTickClient()
+        self.assertEqual(c.provider_name, 'emailtick')
+
+    def test_has_methods(self):
+        from providers.emailtick import EmailTickClient
+        c = EmailTickClient()
+        self.assertTrue(callable(c.generate_email))
+        self.assertTrue(callable(c.list_emails))
+        self.assertTrue(callable(c.get_email_detail))
+        self.assertTrue(callable(c.delete_email))
+
+    def test_parse_emailtick_html_rows(self):
+        from providers.emailtick import EmailTickClient
+        c = EmailTickClient()
+        html = '''
+        <tr>
+          <td>sender@example.com</td>
+          <td><a href="javascript:;" class="detail" data-id="abc123">Verify account</a></td>
+          <td>2026-06-20 16:00</td>
+        </tr>
+        '''
+        parsed = c._parse_emails(html)
+        self.assertEqual(len(parsed), 1)
+        self.assertEqual(parsed[0]['id'], 'abc123')
+        self.assertEqual(parsed[0]['subject'], 'Verify account')
+        self.assertEqual(parsed[0]['from_email'], 'sender@example.com')
+        self.assertEqual(parsed[0]['received_at'], '2026-06-20 16:00')
