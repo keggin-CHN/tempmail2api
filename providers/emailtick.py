@@ -9,8 +9,8 @@ import logging
 import re
 from typing import Any, Dict, List, Optional
 
-import requests
 from bs4 import BeautifulSoup
+from curl_cffi import requests as curl_requests
 
 from .base import InboxEmail, TempEmail, TempMailClient
 from .utils import EmailFetchError, EmailGenerateError, retry
@@ -32,7 +32,7 @@ class EmailTickClient(TempMailClient):
     """
 
     def __init__(self) -> None:
-        self.session = requests.Session()
+        self.session = curl_requests.Session(impersonate="chrome136")
         self.session.headers.update({
             "User-Agent": (
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -160,7 +160,7 @@ class EmailTickClient(TempMailClient):
                     raise EmailGenerateError(f"EmailTick 换新地址失败: {new_addr}")
                 self._mailbox = new_addr
                 self._activate(self._mailbox)
-        except requests.RequestException as e:
+        except curl_requests.RequestException as e:
             raise EmailGenerateError(f"EmailTick 激活邮箱失败: {e}") from e
 
         logger.info("[emailtick] 生成/激活邮箱: %s", self._mailbox)
@@ -188,7 +188,7 @@ class EmailTickClient(TempMailClient):
                 timeout=15,
             )
             resp.raise_for_status()
-        except requests.RequestException as e:
+        except curl_requests.RequestException as e:
             raise EmailFetchError(f"EmailTick 检查收件箱失败: {e}") from e
 
         raw = resp.text.strip()
