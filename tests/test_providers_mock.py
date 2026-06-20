@@ -161,15 +161,38 @@ class TestEmailTickClient(unittest.TestCase):
         from providers.emailtick import EmailTickClient
         c = EmailTickClient()
         html = '''
+        <div class="msglist"><table><tbody>
         <tr>
           <td>sender@example.com</td>
-          <td><a href="javascript:;" class="detail" data-id="abc123">Verify account</a></td>
+          <td><a href="/mail/abc123">Verify account</a></td>
           <td>2026-06-20 16:00</td>
         </tr>
+        </tbody></table></div>
         '''
         parsed = c._parse_emails(html)
         self.assertEqual(len(parsed), 1)
-        self.assertEqual(parsed[0]['id'], 'abc123')
+        self.assertTrue(parsed[0]['id'])
         self.assertEqual(parsed[0]['subject'], 'Verify account')
         self.assertEqual(parsed[0]['from_email'], 'sender@example.com')
         self.assertEqual(parsed[0]['received_at'], '2026-06-20 16:00')
+        self.assertEqual(parsed[0]['href'], '/mail/abc123')
+
+    def test_change_email_posts_expected_payload(self):
+        from providers.emailtick import EmailTickClient
+        c = EmailTickClient()
+        c._mailbox = 'old@gmail.com'
+        c._salt = 'salt'
+        c._fetch_page = MagicMock(return_value='')
+        c._activate = MagicMock(return_value=True)
+        response = MagicMock()
+        response.text = 'new@gmail.com'
+        response.raise_for_status = MagicMock()
+        c.session.post = MagicMock(return_value=response)
+
+        email = c.change_email(random=True)
+
+        self.assertEqual(email.address, 'new@gmail.com')
+        c.session.post.assert_called_once()
+        payload = c.session.post.call_args.kwargs['data']
+        self.assertEqual(payload['type[]'], ['1', '2', '3'])
+        self.assertEqual(payload['set'], '1')

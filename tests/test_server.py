@@ -100,6 +100,28 @@ class TestAPIServer(unittest.TestCase):
         self.assertIn("/api/generate", body["paths"])
         self.assertIn("/api/inbox", body["paths"])
 
+    def test_change_endpoint_available(self):
+        with unittest.mock.patch("server.get_client") as get_client:
+            mock_client = unittest.mock.MagicMock()
+            mock_client.change_email.return_value = unittest.mock.MagicMock(address="new-address@example.com", provider="emailtick")
+            get_client.return_value = mock_client
+            status, body = self._post("/api/change", {"random": True})
+
+        self.assertEqual(status, 200)
+        self.assertEqual(body["address"], "new-address@example.com")
+        self.assertEqual(body["provider"], "emailtick")
+
+    def test_delete_endpoint_available(self):
+        with unittest.mock.patch("server.get_client") as get_client:
+            mock_client = unittest.mock.MagicMock()
+            mock_client.delete_current_mailbox.return_value = unittest.mock.MagicMock(address="deleted@example.com", provider="emailtick")
+            get_client.return_value = mock_client
+            status, body = self._post("/api/delete")
+
+        self.assertEqual(status, 200)
+        self.assertEqual(body["address"], "deleted@example.com")
+        self.assertEqual(body["provider"], "emailtick")
+
     def test_cors_preflight(self):
         import http.client
         conn = http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)

@@ -9,11 +9,13 @@
     python server.py --host 0.0.0.0     # 允许外部访问
 
 端点:
-    GET  /api/health                 健康检查
-    POST /api/generate               生成临时邮箱
-    GET  /api/inbox?address=xxx      查看收件箱
+    GET  /api/health                    健康检查
+    POST /api/generate                  生成临时邮箱
+    GET  /api/inbox?address=xxx         查看收件箱
     GET  /api/inbox?address=xxx&id=xxx  查看邮件详情
-    GET  /api/providers              列出支持的 provider
+    POST /api/change                    切换邮箱地址（支持 Random）
+    POST /api/delete                    删除当前邮箱地址
+    GET  /api/providers                 列出支持的 provider
 """
 
 import argparse
@@ -50,6 +52,7 @@ PROVIDERS = {
 
 DEFAULT_PROVIDER = "inboxkitten"
 START_TIME = time.time()
+CLIENTS: Dict[str, Any] = {}
 
 
 class RateLimiter:
@@ -86,11 +89,14 @@ def json_response(handler: BaseHTTPRequestHandler, status: int, data: Any) -> No
 
 
 def get_client(provider_name: str = DEFAULT_PROVIDER):
-    """获取 provider 客户端"""
+    """获取 provider 客户端；复用实例以保留 EmailTick 等站点的会话 cookie。"""
     cls = PROVIDERS.get(provider_name)
     if not cls:
         return None
-    return cls()
+    cache_key = cls.__name__
+    if cache_key not in CLIENTS:
+        CLIENTS[cache_key] = cls()
+    return CLIENTS[cache_key]
 
 
 class APIHandler(BaseHTTPRequestHandler):
@@ -129,14 +135,17 @@ class APIHandler(BaseHTTPRequestHandler):
         elif path == "/":
             json_response(self, 200, {
                 "service": "chatgptmail-2api",
-                "version": "2.3.0",
-                "description": "多个经实测验证的临时邮箱 provider",
+                "version": "2.4.0",
+                "description": "多个经实测验证的临时邮箱 provider，包含完整邮箱生命周期管理",
                 "providers": list(PROVIDERS.keys()),
                 "endpoints": [
                     "GET /api/health",
                     "GET /api/docs (OpenAPI)",
                     "POST /api/generate",
                     "GET /api/inbox?address=xxx",
+                    "GET /api/inbox?address=xxx&id=xxx",
+                    "POST /api/change",
+                    "POST /api/delete",
                     "GET /api/providers",
                 ],
             })
@@ -149,6 +158,10 @@ class APIHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         if parsed.path == "/api/generate":
             self._handle_generate()
+        elif parsed.path == "/api/change":
+            self._handle_change()
+        elif parsed.path == "/api/delete":
+            self._handle_delete()
         else:
             json_response(self, 404, {"error": "Not found"})
 
@@ -165,8 +178,8 @@ class APIHandler(BaseHTTPRequestHandler):
             "openapi": "3.0.3",
             "info": {
                 "title": "chatgptmail-2api",
-                "version": "2.3.0",
-                "description": "多个经实测验证的临时邮箱 provider (InboxKitten, Mailnesia, Anonymmail, TempMail.lol, ChatGPTMail, TempMail.ing, EmailTick)",
+                "version": "2.4.0",
+                "description": "多个经实测验证的临时邮箱 provider (InboxKitten, Mailnesia, Anonymmail, TempMail.lol, ChatGPTMail, TempMail.ing, EmailTick)，支持 EmailTick 切换/删除邮箱",
             },
             "paths": {
                 "/api/health": {
@@ -201,6 +214,12 @@ class APIHandler(BaseHTTPRequestHandler):
                         "responses": {"200": {"description": "邮件列表或详情"}}
                     }
                 },
+                "/api/change": {
+                    "post": {"summary": "切换 EmailTick 邮箱", "responses": {"200": {"description": "新邮箱信息"}}}
+                },
+                "/api/delete": {
+                    "post": {"summary": "删除当前 EmailTick 邮箱", "responses": {"200": {"description": "删除后返回的新邮箱信息"}}}
+                },
                 "/api/providers": {
                     "get": {"summary": "列出支持的 provider", "responses": {"200": {"description": "provider 列表"}}}
                 },
@@ -215,14 +234,19 @@ class APIHandler(BaseHTTPRequestHandler):
             "verified": ["inboxkitten", "mailnesia", "anonymmail", "tempmaillol", "chatgptmail", "tempmail", "emailtick"],
         })
 
-    def _handle_generate(self):
+    def _read_post_body(self) -> Dict[str, Any]:
         try:
             content_length = int(self.headers.get("Content-Length", 0))
-            body = {}
-            if content_length > 0:
-                raw = self.rfile.read(content_length)
-                body = json.loads(raw)
+            if content_length <= 0:
+                return {}
+            raw = self.rfile.read(content_length)
+            return json.loads(raw)
+        except Exception:
+            return {}
 
+    def _handle_generate(self):
+        try:
+            body = self._read_post_body()
             provider = body.get("provider", DEFAULT_PROVIDER)
             client = get_client(provider)
             if not client:
@@ -237,6 +261,42 @@ class APIHandler(BaseHTTPRequestHandler):
             })
         except Exception as e:
             logger.exception("生成邮箱失败")
+            json_response(self, 500, {"error": str(e)})
+
+    def _get_emailtick_client(self):
+        client = get_client("emailtick")
+        if not client:
+            raise RuntimeError("EmailTick provider 不可用")
+        return client
+
+    def _handle_change(self):
+        try:
+            body = self._read_post_body()
+            client = self._get_emailtick_client()
+            if body.get("random"):
+                email = client.change_email(random=True)
+            else:
+                change_type = str(body.get("type", EmailTickClient.CHANGE_DOT))
+                email = client.change_email(change_type=change_type)
+
+            json_response(self, 200, {
+                "address": email.address,
+                "provider": email.provider,
+            })
+        except Exception as e:
+            logger.exception("切换邮箱失败")
+            json_response(self, 500, {"error": str(e)})
+
+    def _handle_delete(self):
+        try:
+            client = self._get_emailtick_client()
+            email = client.delete_current_mailbox()
+            json_response(self, 200, {
+                "address": email.address,
+                "provider": email.provider,
+            })
+        except Exception as e:
+            logger.exception("删除邮箱失败")
             json_response(self, 500, {"error": str(e)})
 
     def _handle_inbox(self, params):
