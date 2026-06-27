@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-命令行工具 — 4 个经实测验证的临时邮箱 provider
+命令行工具 — 9 个经实测验证的临时邮箱 provider
 
 用法:
     python cli.py generate --provider inboxkitten
@@ -53,6 +53,7 @@ def detect_provider(address: str) -> Optional[str]:
         "sharklasers.com": "guerrillamail",
         "grr.la": "guerrillamail",
         "maildrop.cc": "maildrop",
+        "web-library.net": "mailtm",
     }
     
     for d, p in domain_map.items():
@@ -164,7 +165,7 @@ def cmd_providers(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="临时邮箱 CLI — 4 个经实测验证的 provider")
+    parser = argparse.ArgumentParser(description="临时邮箱 CLI — 9 个经实测验证的 provider")
     parser.add_argument("--json", action="store_true", help="JSON 格式输出")
     sub = parser.add_subparsers(dest="command")
     

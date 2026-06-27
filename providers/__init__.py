@@ -1,4 +1,4 @@
-"""Providers package — 10 个经过实测验证的临时邮箱 provider."""
+"""Providers package — 9 个经过实测验证的临时邮箱 provider."""
 
 from .inboxkitten import InboxkittenClient as InboxKittenClient
 from .mailnesia import MailnesiaClient
@@ -6,7 +6,6 @@ from .anonymmail import AnonymmailClient
 from .tempmail_lol import TempMailLolClient
 from .chatgptmail import ChatGPTMailClient
 from .tempmail_ing import TempMailIngClient
-from .emailtick import EmailTickClient
 from .guerrillamail import GuerrillaMailClient
 from .maildrop import MaildropClient
 from .mailtm import MailTmClient
@@ -23,7 +22,6 @@ __all__ = [
     "TempMailLolClient",
     "ChatGPTMailClient",
     "TempMailIngClient",
-    "EmailTickClient",
     "GuerrillaMailClient",
     "MaildropClient",
     "MailTmClient",
