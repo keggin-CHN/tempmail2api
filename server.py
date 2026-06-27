@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-临时邮箱 HTTP API 服务 — 9 个经实测验证的 provider
+临时邮箱 HTTP API 服务 — 11 个经实测验证的 provider
 基于 http.server，无需额外依赖
 
 启动:
@@ -33,6 +33,8 @@ from providers.tempmail_ing import TempMailIngClient
 from providers.guerrillamail import GuerrillaMailClient
 from providers.maildrop import MaildropClient
 from providers.mailtm import MailTmClient
+from providers.minmail import MinMailClient
+from providers.tempmail_plus import TempMailPlusClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -50,6 +52,9 @@ PROVIDERS = {
     "guerrilla": GuerrillaMailClient,
     "maildrop": MaildropClient,
     "mailtm": MailTmClient,
+    "minmail": MinMailClient,
+    "tempmailplus": TempMailPlusClient,
+    "tempmail.plus": TempMailPlusClient,
 }
 
 DEFAULT_PROVIDER = "inboxkitten"

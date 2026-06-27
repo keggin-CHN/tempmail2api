@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-命令行工具 — 9 个经实测验证的临时邮箱 provider
+命令行工具 — 11 个经实测验证的临时邮箱 provider
 
 用法:
     python cli.py generate --provider inboxkitten
@@ -21,6 +21,8 @@ from providers.tempmail_ing import TempMailIngClient
 from providers.guerrillamail import GuerrillaMailClient
 from providers.maildrop import MaildropClient
 from providers.mailtm import MailTmClient
+from providers.minmail import MinMailClient
+from providers.tempmail_plus import TempMailPlusClient
 
 from typing import Optional
 
@@ -37,6 +39,9 @@ PROVIDERS = {
     "guerrilla": GuerrillaMailClient,
     "maildrop": MaildropClient,
     "mailtm": MailTmClient,
+    "minmail": MinMailClient,
+    "tempmailplus": TempMailPlusClient,
+    "tempmail.plus": TempMailPlusClient,
 }
 
 
@@ -54,6 +59,16 @@ def detect_provider(address: str) -> Optional[str]:
         "grr.la": "guerrillamail",
         "maildrop.cc": "maildrop",
         "web-library.net": "mailtm",
+        "atminmail.com": "minmail",
+        "mailto.plus": "tempmailplus",
+        "fexpost.com": "tempmailplus",
+        "fexbox.org": "tempmailplus",
+        "any.pink": "tempmailplus",
+        "chitthi.in": "tempmailplus",
+        "fextemp.com": "tempmailplus",
+        "merepost.com": "tempmailplus",
+        "rover.info": "tempmailplus",
+        "mailbox.in.ua": "tempmailplus",
     }
     
     for d, p in domain_map.items():

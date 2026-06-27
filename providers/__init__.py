@@ -1,4 +1,4 @@
-"""Providers package — 9 个经过实测验证的临时邮箱 provider."""
+"""Providers package — 11 个经过实测验证的临时邮箱 provider."""
 
 from .inboxkitten import InboxkittenClient as InboxKittenClient
 from .mailnesia import MailnesiaClient
@@ -9,6 +9,8 @@ from .tempmail_ing import TempMailIngClient
 from .guerrillamail import GuerrillaMailClient
 from .maildrop import MaildropClient
 from .mailtm import MailTmClient
+from .minmail import MinMailClient
+from .tempmail_plus import TempMailPlusClient
 
 # Re-export base types
 from .base import TempMailClient, TempEmail, InboxEmail
@@ -25,6 +27,8 @@ __all__ = [
     "GuerrillaMailClient",
     "MaildropClient",
     "MailTmClient",
+    "MinMailClient",
+    "TempMailPlusClient",
     "TempEmail", "InboxEmail", "ETagCache",
     "TempMailError", "EmailGenerateError", "EmailFetchError", "RateLimitError",
 ]
