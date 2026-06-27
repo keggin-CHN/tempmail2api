@@ -18,6 +18,9 @@ from providers.anonymmail import AnonymmailClient
 from providers.tempmail_lol import TempMailLolClient
 from providers.chatgptmail import ChatGPTMailClient
 from providers.tempmail_ing import TempMailIngClient
+from providers.guerrillamail import GuerrillaMailClient
+from providers.maildrop import MaildropClient
+from providers.mailtm import MailTmClient
 
 from typing import Optional
 
@@ -30,6 +33,10 @@ PROVIDERS = {
     "chatgptmail": ChatGPTMailClient,
     "tempmail": TempMailIngClient,
     "tempmailing": TempMailIngClient,
+    "guerrillamail": GuerrillaMailClient,
+    "guerrilla": GuerrillaMailClient,
+    "maildrop": MaildropClient,
+    "mailtm": MailTmClient,
 }
 
 
@@ -41,6 +48,11 @@ def detect_provider(address: str) -> Optional[str]:
         "inboxkitten.com": "inboxkitten",
         "mailnesia.com": "mailnesia",
         "anonymmail.net": "anonymmail",
+        "guerrillamailblock.com": "guerrillamail",
+        "guerrillamail.com": "guerrillamail",
+        "sharklasers.com": "guerrillamail",
+        "grr.la": "guerrillamail",
+        "maildrop.cc": "maildrop",
     }
     
     for d, p in domain_map.items():

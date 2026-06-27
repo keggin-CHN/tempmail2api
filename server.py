@@ -33,6 +33,9 @@ from providers.tempmail_lol import TempMailLolClient
 from providers.chatgptmail import ChatGPTMailClient
 from providers.tempmail_ing import TempMailIngClient
 from providers.emailtick import EmailTickClient
+from providers.guerrillamail import GuerrillaMailClient
+from providers.maildrop import MaildropClient
+from providers.mailtm import MailTmClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("api-server")
@@ -48,6 +51,10 @@ PROVIDERS = {
     "tempmailing": TempMailIngClient,
     "emailtick": EmailTickClient,
     "mailticking": EmailTickClient,
+    "guerrillamail": GuerrillaMailClient,
+    "guerrilla": GuerrillaMailClient,
+    "maildrop": MaildropClient,
+    "mailtm": MailTmClient,
 }
 
 DEFAULT_PROVIDER = "inboxkitten"
